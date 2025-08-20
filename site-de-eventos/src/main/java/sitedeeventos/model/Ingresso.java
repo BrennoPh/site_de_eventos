@@ -1,9 +1,74 @@
 package sitedeeventos.model;
 
-public class Ingresso {
+import java.time.LocalDateTime;
 
-	public Ingresso() {
-		// TODO Auto-generated constructor stub
+public class Ingresso {
+	private int idIncricao;
+	private int idEvento;
+	private String nomeParticipante;
+	private String emailParticipante;
+	private LocalDateTime dataCompra;
+	private double precoIngresso;
+	
+	public Ingresso(int idIncricao, int idEvento, String nomeParticipante, String emailParticipante, LocalDateTime dataCompra,
+			double precoIngresso) {
+		this.idIncricao = idIncricao;
+		this.idEvento = idEvento;
+		this.nomeParticipante = nomeParticipante;
+		this.emailParticipante = emailParticipante;
+		this.dataCompra = dataCompra;
+		this.precoIngresso = precoIngresso;
 	}
 
+	public int getIdIncricao() {
+		return idIncricao;
+	}
+
+	public int getIdEvento() {
+		return idEvento;
+	}
+
+	public String getNomeParticipante() {
+		return nomeParticipante;
+	}
+
+	public String getEmailParticipante() {
+		return emailParticipante;
+	}
+
+	public LocalDateTime getDataCompra() {
+		return dataCompra;
+	}
+
+	public double getPrecoIngresso() {
+		return precoIngresso;
+	}
+
+	public void setIdIncricao(int idIncricao) {
+		this.idIncricao = idIncricao;
+	}
+
+	public void setIdEvento(int idEvento) {
+		this.idEvento = idEvento;
+	}
+
+	public void setNomeParticipante(String nomeParticipante) {
+		this.nomeParticipante = nomeParticipante;
+	}
+
+	public void setEmailParticipante(String emailParticipante) {
+		this.emailParticipante = emailParticipante;
+	}
+
+	public void setDataCompra(LocalDateTime dataCompra) {
+		this.dataCompra = dataCompra;
+	}
+
+	public void setPrecoIngresso(double precoIngresso) {
+		this.precoIngresso = precoIngresso;
+	}
+	
+	
+	
+	
 }
