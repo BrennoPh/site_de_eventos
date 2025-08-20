@@ -3,7 +3,7 @@ package sitedeeventos.model;
 import java.time.LocalDateTime;
 
 public class Pedido {
-	private int idIngresso;
+	private Ingresso ingresso;
 	private int idUsuario;
 	private int idEvento;
 	private int quantidadeIngressos;
@@ -12,9 +12,9 @@ public class Pedido {
 	private String status;
 	
 	
-	public Pedido(int idIngresso, int idUsuario, int idEvento, int quantidadeIngressos, double valorTotal,
+	public Pedido(Ingresso ingresso, int idUsuario, int idEvento, int quantidadeIngressos, double valorTotal,
 			LocalDateTime dataPedido, String status) {
-		this.idIngresso = idIngresso;
+		this.ingresso = ingresso;
 		this.idUsuario = idUsuario;
 		this.idEvento = idEvento;
 		this.quantidadeIngressos = quantidadeIngressos;
@@ -24,8 +24,8 @@ public class Pedido {
 	}
 
 
-	public int getIdIngresso() {
-		return idIngresso;
+	public Ingresso getIdIngresso() {
+		return ingresso;
 	}
 
 
@@ -59,8 +59,8 @@ public class Pedido {
 	}
 
 
-	public void setIdIngresso(int idIngresso) {
-		this.idIngresso = idIngresso;
+	public void setIdIngresso(Ingresso ingresso) {
+		this.ingresso = ingresso;
 	}
 
 

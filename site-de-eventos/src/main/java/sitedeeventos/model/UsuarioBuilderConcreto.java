@@ -42,6 +42,10 @@ public class UsuarioBuilderConcreto implements IUsuarioBuilder{
 		this.usuario.setDataNascimento(dataNascimento);
 		return this;
 	}
+	public IUsuarioBuilder pedidos(Pedido pedidos) {
+		this.usuario.setPedidos(pedidos);
+		return this;
+	}
 	public Usuario build() {
 		return this.usuario;
 	}

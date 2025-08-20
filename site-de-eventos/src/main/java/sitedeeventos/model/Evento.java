@@ -9,7 +9,7 @@ public class Evento {
 	private String nomeEvento;
 	private String local;
 	private String categoria;
-	private String organizador;
+	private Organizador organizador;
 	private String descrição;
 	private double preco;
 	private LocalDateTime dataEvento;
@@ -37,7 +37,7 @@ public class Evento {
 	public String getCategoria() {
 		return categoria;
 	}
-	public String getOrganizador() {
+	public Organizador getOrganizador() {
 		return organizador;
 	}
 	public String getDescrição() {
@@ -69,7 +69,7 @@ public class Evento {
 	public void setCategoria(String categoria) {
 		this.categoria = categoria;
 	}
-	public void setOrganizador(String organizador) {
+	public void setOrganizador(Organizador organizador) {
 		this.organizador = organizador;
 	}
 	public void setDescrição(String descrição) {

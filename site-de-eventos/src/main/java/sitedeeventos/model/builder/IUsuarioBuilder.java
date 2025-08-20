@@ -1,6 +1,7 @@
 package sitedeeventos.model.builder;
 
 import sitedeeventos.model.Usuario;
+import sitedeeventos.model.Pedido;
 import java.time.LocalDateTime;
 
 public interface IUsuarioBuilder {
@@ -12,5 +13,6 @@ public interface IUsuarioBuilder {
 	public IUsuarioBuilder cidade(String cidade);
 	public IUsuarioBuilder endereco(String endereco);
 	public IUsuarioBuilder dataNascimento(LocalDateTime dataNascimento);
+	public IUsuarioBuilder pedidos(Pedido pedidos);
 	public Usuario build();
 }

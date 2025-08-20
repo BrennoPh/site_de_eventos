@@ -11,6 +11,7 @@ public class Usuario {
 	private String cidade;
 	private String endereco;
 	private LocalDateTime dataNascimento;
+	private Pedido pedidos;
 	
 	Usuario() {
 	}
@@ -46,6 +47,10 @@ public class Usuario {
 	public LocalDateTime getDataNascimento() {
 		return dataNascimento;
 	}
+	
+	public Pedido getPedidos() {
+		return pedidos;
+	}
 
 	public void setIdUsuario(int idUsuario) {
 		this.idUsuario = idUsuario;
@@ -78,7 +83,10 @@ public class Usuario {
 	public void setDataNascimento(LocalDateTime dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
-
+	
+	public void setPedidos(Pedido pedidos) {
+		this.pedidos = pedidos;
+	}
 	
 	
 
