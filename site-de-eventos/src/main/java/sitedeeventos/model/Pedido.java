@@ -3,24 +3,20 @@ package sitedeeventos.model;
 import java.time.LocalDateTime;
 
 public class Pedido {
-	private Ingresso ingresso;
+	private int idPedido;
 	private int idUsuario;
-	private int idEvento;
+	private Ingresso ingresso;
 	private int quantidadeIngressos;
-	private double valorTotal;
+	private double valorBase; // Sem Cupom ou Taxa de Serviço
+	private double valorTotal; // Com cupom ou taxa de serviço
 	private LocalDateTime dataPedido;
 	private String status;
 	
 	
-	public Pedido(Ingresso ingresso, int idUsuario, int idEvento, int quantidadeIngressos, double valorTotal,
-			LocalDateTime dataPedido, String status) {
-		this.ingresso = ingresso;
+	public Pedido(int idUsuario, Ingresso ingresso, int quantidadeIngressos) {
 		this.idUsuario = idUsuario;
-		this.idEvento = idEvento;
+		this.ingresso = ingresso;
 		this.quantidadeIngressos = quantidadeIngressos;
-		this.valorTotal = valorTotal;
-		this.dataPedido = dataPedido;
-		this.status = status;
 	}
 
 
@@ -31,11 +27,6 @@ public class Pedido {
 
 	public int getIdUsuario() {
 		return idUsuario;
-	}
-
-
-	public int getIdEvento() {
-		return idEvento;
 	}
 
 
@@ -68,12 +59,6 @@ public class Pedido {
 		this.idUsuario = idUsuario;
 	}
 
-
-	public void setIdEvento(int idEvento) {
-		this.idEvento = idEvento;
-	}
-
-
 	public void setQuantidadeIngressos(int quantidadeIngressos) {
 		this.quantidadeIngressos = quantidadeIngressos;
 	}
@@ -91,6 +76,26 @@ public class Pedido {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+
+	public double getValorBase() {
+		return valorBase;
+	}
+
+
+	public void setValorBase(double valorBase) {
+		this.valorBase = valorBase;
+	}
+
+
+	public int getIdPedido() {
+		return idPedido;
+	}
+
+
+	public void setIdPedido(int idPedido) {
+		this.idPedido = idPedido;
 	}
 
 	

@@ -1,9 +1,7 @@
 package sitedeeventos.service.strategy;
 
-public class ICalculoPrecoPedidoStrategy {
+import sitedeeventos.model.Pedido;
 
-	public ICalculoPrecoPedidoStrategy() {
-		// TODO Auto-generated constructor stub
-	}
-
+public interface ICalculoPrecoPedidoStrategy {
+	double calcularPreco(Pedido pedido);
 }
