@@ -43,7 +43,7 @@ public class UsuarioBuilderConcreto implements IUsuarioBuilder{
 		return this;
 	}
 	public IUsuarioBuilder pedidos(Pedido pedidos) {
-		this.usuario.setPedidos(pedidos);
+		this.usuario.adicionarPedido(pedidos);
 		return this;
 	}
 	public Usuario build() {

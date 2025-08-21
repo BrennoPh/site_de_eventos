@@ -47,7 +47,7 @@ public class EventoBuilderConcreto implements IEventoBuilder{
     }
     
     @Override
-    public IEventoBuilder organizador(String organizador) {
+    public IEventoBuilder organizador(Organizador organizador) {
         this.evento.setOrganizador(organizador);
         return this;
     }
