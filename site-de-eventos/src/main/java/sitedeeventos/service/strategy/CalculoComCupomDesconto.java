@@ -12,6 +12,7 @@ public class CalculoComCupomDesconto implements ICalculoPrecoPedidoStrategy{
 	@Override
 	public double calcularPreco(Pedido pedido) {
 		double valorBase = pedido.getValorBase();
+		return Math.max(0, valorBase - valorDesconto)
 	}
 
 }
