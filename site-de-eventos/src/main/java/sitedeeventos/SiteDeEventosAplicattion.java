@@ -1,6 +1,6 @@
 package sitedeeventos;
 
-public class MainAplicattion {
+public class SiteDeEventosAplicattion{
 
 	public static void main(String[] args) {
 		

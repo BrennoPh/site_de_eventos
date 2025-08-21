@@ -1,4 +1,4 @@
-package sitedeeventos.model.strategy;
+package sitedeeventos.service.strategy;
 
 public class CalculoComTaxaServico {
 
