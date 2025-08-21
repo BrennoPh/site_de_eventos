@@ -1,103 +1,100 @@
 package sitedeeventos.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pedido {
 	private int idPedido;
-	private int idUsuario;
-	private Ingresso ingresso;
+	private Usuario usuario;
+	private Evento evento;
+
+	private List<Ingresso> ingressos;
+
 	private int quantidadeIngressos;
-	private double valorBase; // Sem Cupom ou Taxa de Serviço
-	private double valorTotal; // Com cupom ou taxa de serviço
+	private double valorBase;
+	private double valorTotal;
 	private LocalDateTime dataPedido;
 	private String status;
-	
-	
-	public Pedido(int idUsuario, Ingresso ingresso, int quantidadeIngressos) {
-		this.idUsuario = idUsuario;
-		this.ingresso = ingresso;
+
+	public Pedido(Usuario usuario, Evento evento, int quantidadeIngressos) {
+		this.usuario = usuario;
+		this.evento = evento;
 		this.quantidadeIngressos = quantidadeIngressos;
+		this.ingressos = new ArrayList<>();
+		this.dataPedido = LocalDateTime.now();
+		this.status = "PENDENTE";
 	}
 
-
-	public Ingresso getIdIngresso() {
-		return ingresso;
+	public int getIdPedido() {
+		return idPedido;
 	}
 
-
-	public int getIdUsuario() {
-		return idUsuario;
+	public void setIdPedido(int idPedido) {
+		this.idPedido = idPedido;
 	}
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public Evento getEvento() {
+		return evento;
+	}
+
+	public void setEvento(Evento evento) {
+		this.evento = evento;
+	}
+
+	public List<Ingresso> getIngressos() {
+		return ingressos;
+	}
+
+	public void setIngressos(List<Ingresso> ingressos) {
+		this.ingressos = ingressos;
+	}
 
 	public int getQuantidadeIngressos() {
 		return quantidadeIngressos;
-	}
-
-
-	public double getValorTotal() {
-		return valorTotal;
-	}
-
-
-	public LocalDateTime getDataPedido() {
-		return dataPedido;
-	}
-
-
-	public String getStatus() {
-		return status;
-	}
-
-
-	public void setIdIngresso(Ingresso ingresso) {
-		this.ingresso = ingresso;
-	}
-
-
-	public void setIdUsuario(int idUsuario) {
-		this.idUsuario = idUsuario;
 	}
 
 	public void setQuantidadeIngressos(int quantidadeIngressos) {
 		this.quantidadeIngressos = quantidadeIngressos;
 	}
 
-
-	public void setValorTotal(double valorTotal) {
-		this.valorTotal = valorTotal;
-	}
-
-
-	public void setDataPedido(LocalDateTime dataPedido) {
-		this.dataPedido = dataPedido;
-	}
-
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-
 	public double getValorBase() {
 		return valorBase;
 	}
-
 
 	public void setValorBase(double valorBase) {
 		this.valorBase = valorBase;
 	}
 
-
-	public int getIdPedido() {
-		return idPedido;
+	public double getValorTotal() {
+		return valorTotal;
 	}
 
-
-	public void setIdPedido(int idPedido) {
-		this.idPedido = idPedido;
+	public void setValorTotal(double valorTotal) {
+		this.valorTotal = valorTotal;
 	}
 
-	
+	public LocalDateTime getDataPedido() {
+		return dataPedido;
+	}
 
+	public void setDataPedido(LocalDateTime dataPedido) {
+		this.dataPedido = dataPedido;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }

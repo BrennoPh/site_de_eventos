@@ -1,6 +1,8 @@
 package sitedeeventos.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Usuario {
 	private int idUsuario;
@@ -11,9 +13,10 @@ public class Usuario {
 	private String cidade;
 	private String endereco;
 	private LocalDateTime dataNascimento;
-	private Pedido pedidos;
+	private List<Pedido> pedidos;
 	
 	Usuario() {
+	 this.pedidos = new ArrayList<>();
 	}
 
 	public int getIdUsuario() {
@@ -47,10 +50,10 @@ public class Usuario {
 	public LocalDateTime getDataNascimento() {
 		return dataNascimento;
 	}
-	
-	public Pedido getPedidos() {
-		return pedidos;
-	}
+
+    public List<Pedido> getPedidos() {
+        return this.pedidos;
+    }
 
 	public void setIdUsuario(int idUsuario) {
 		this.idUsuario = idUsuario;
@@ -84,9 +87,9 @@ public class Usuario {
 		this.dataNascimento = dataNascimento;
 	}
 	
-	public void setPedidos(Pedido pedidos) {
-		this.pedidos = pedidos;
-	}
+	public void adicionarPedido(Pedido pedido) {
+        this.pedidos.add(pedido);
+    }
 	
 	
 
