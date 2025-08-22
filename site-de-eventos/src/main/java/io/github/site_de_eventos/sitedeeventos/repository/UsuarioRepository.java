@@ -1,9 +1,8 @@
 package io.github.site_de_eventos.sitedeeventos.repository;
 
+import io.github.site_de_eventos.sitedeeventos.model.Usuario;
 import java.util.List;
 import java.util.Optional;
-
-import io.github.site_de_eventos.sitedeeventos.model.Usuario;
 
 public interface UsuarioRepository {
 	Usuario save(Usuario usuario);

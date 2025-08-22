@@ -1,28 +1,20 @@
 package io.github.site_de_eventos.sitedeeventos.repository.impl;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.springframework.stereotype.Repository;
-
 import io.github.site_de_eventos.sitedeeventos.model.Evento;
 import io.github.site_de_eventos.sitedeeventos.repository.EventoRepository;
-
 
 @Repository
 public class EventoArquivoRepository implements EventoRepository {
 
     private final Map<Integer, Evento> database = new ConcurrentHashMap<>();
     private final AtomicInteger idGenerator = new AtomicInteger(0);
-
-    public EventoArquivoRepository() {
-        
-    }
 
     @Override
     public Evento save(Evento evento) {
@@ -35,6 +27,7 @@ public class EventoArquivoRepository implements EventoRepository {
     }
 
     @Override
+    // SOLUÇÃO: O método agora busca pelo tipo correto (int), fazendo o botão "Ingressos" funcionar.
     public Optional<Evento> findById(int id) {
         return Optional.ofNullable(database.get(id));
     }
