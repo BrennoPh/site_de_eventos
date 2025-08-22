@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Plataforma de Eventos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">XOGUM</div>
+            <div class="search"><input id="searchInput" placeholder="Buscar eventos..." autocomplete="off" /></div>
+            <nav class="header-nav" style="display: flex; gap: 1rem; align-items: center; white-space: nowrap;">
+                <a th:if="${session.usuarioLogado instanceof T(sitedeeventos.model.Organizador)}" href="/eventos/novo"
+                    style="color: var(--white); text-decoration: none;">Criar Evento</a>
+                <a th:if="${session.usuarioLogado != null}" href="/meus-eventos"
+                    style="color: var(--white); text-decoration: none;gap: 1rem;">Meus Ingressos</a>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div th:if="${session.usuarioLogado == null}">
+                    <a href="/login" style="color: var(--white); text-decoration: none;">Entrar</a>
+                </div>
+                <div th:if="${session.usuarioLogado != null}" style="display: flex; align-items: center; gap: 1rem;">
+                    <a href="/logout" class="btn-muted" style="text-decoration: none;">Sair</a>
+                    <div class="profile" th:text="${#strings.substring(session.usuarioLogado.nome, 0, 1)}"></div>
+                </div>
+            </div>
+        </header>
+        <div class="controls">
+            <div class="chip" id="cityChip">Aracaju</div>
+            <div class="chip" id="dateChip">Este mês</div>
+            <div class="chip" id="filterChip">Filtros</div>
+        </div>
+
+        <section class="hero">
+            <div class="left">
+                <h2 th:text="|Ei, ${nomeUsuario}, sua próxima experiência está aqui!|">Ei, sua próxima experiência está
+                    aqui!</h2>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="big">0</div>
+                        <div class="small">Horas de festa</div>
+                    </div>
+                    <div class="stat">
+                        <div class="big" id="eventsCount" th:text="${eventos.size()}">0</div>
+                        <div class="small">Eventos encontrados</div>
+                    </div>
+                </div>
+            </div>
+            <div class="right" style="min-width:120px;display:flex;align-items:center;justify-content:center">
+                <a href="/mapa" style="color: var(--white); text-decoration: none;"><button id="mapBtn" class="btn-accent">Explorar mapa</button></a>
+            </div>
+        </section>
+
+        <main>
+            <div id="events" class="events">
+                <div class="card" th:each="evento : ${eventos}">
+                    <div class="thumb"
+                        style="background-image: url('https://source.unsplash.com/random/400x200/?party,concert')">
+                    </div>
+                    <div class="body">
+                        <h3 th:text="${evento.nomeEvento}">Título do Evento</h3>
+                        <div class="meta">
+                            <span th:text="'📅 ' + ${#temporals.format(evento.dataEvento, 'dd MMM, HH:mm')}"></span>
+                            <span th:text="'📍 ' + ${evento.local}"></span>
+                        </div>
+                        <div class="tags">
+                            <div class="tag" th:text="${evento.categoria}">Categoria</div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-muted">Detalhes</button>
+                            <a th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent"
+                                style="text-decoration: none;">Ingressos</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="empty-card" th:if="${eventos.isEmpty()}">
+                    Nenhum evento encontrado. <a href="/eventos/novo">Crie o primeiro!</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="mapModal" class="modal" aria-hidden="true">
+        <div class="sheet map-sheet" role="dialog">
+            <div class="map-header">
+                <h3>Mapa — Eventos próximos</h3>
+                <div>
+                    <button id="locateBtn" class="btn-muted">Minha localização</button>
+                    <button id="closeMap" class="btn-muted">Fechar</button>
+                </div>
+            </div>
+            <div id="map" class="map"></div>
+        </div>
+    </div>
+</body>
+
+</html>
