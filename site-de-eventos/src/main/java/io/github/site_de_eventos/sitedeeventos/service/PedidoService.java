@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
 import io.github.site_de_eventos.sitedeeventos.model.Evento;
 import io.github.site_de_eventos.sitedeeventos.model.Ingresso;
 import io.github.site_de_eventos.sitedeeventos.model.Pedido;
@@ -14,6 +16,7 @@ import io.github.site_de_eventos.sitedeeventos.repository.EventoRepository;
 import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
 import io.github.site_de_eventos.sitedeeventos.service.strategy.ICalculoPrecoPedidoStrategy;
 
+@Service
 public class PedidoService {
 
 	private final UsuarioRepository usuarioRepository;
@@ -27,7 +30,7 @@ public class PedidoService {
 		this.calculoStrategies = calculoStrategies;
 	}
 
-	public Pedido processarPedido(int usuarioId, int eventoId, int quantidade, String nomeStrategy) {
+	public Pedido criarPedido(int usuarioId, int eventoId, int quantidade, String nomeStrategy) {
 		Usuario usuario = usuarioRepository.findById(usuarioId)
 				.orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + usuarioId));
 
@@ -49,10 +52,10 @@ public class PedidoService {
 		// STRATEGY: Selecionar e aplicar a estratégia de cálculo de preço.
 		ICalculoPrecoPedidoStrategy strategy = calculoStrategies.getOrDefault(nomeStrategy, p -> p.getValorBase());
 
-		// 4. STRATEGY: Chamamos a strategy e guardamos o valor final que ela retorna.
+		//  STRATEGY: Chamamos a strategy e guardamos o valor final que ela retorna.
 		double valorFinalCalculado = strategy.calcularPreco(pedido);
 
-		// 5. ATRIBUIÇÃO: Definimos o valor final calculado no objeto pedido.
+		// ATRIBUIÇÃO: Definimos o valor final calculado no objeto pedido.
 		pedido.setValorTotal(valorFinalCalculado);
 
 		// O método da strategy agora irá calcular e SETAR o valor final no pedido.

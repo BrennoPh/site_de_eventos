@@ -1,63 +1,79 @@
 package io.github.site_de_eventos.sitedeeventos.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.github.site_de_eventos.sitedeeventos.model.Organizador;
+import io.github.site_de_eventos.sitedeeventos.model.OrganizadorBuilderConcreto;
 import io.github.site_de_eventos.sitedeeventos.model.Usuario;
+import io.github.site_de_eventos.sitedeeventos.model.UsuarioBuilderConcreto;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IOrganizadorBuilder;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IUsuarioBuilder;
 import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
 
-/**
- * Camada de Serviço para a entidade Usuario.
- * Contém as regras de negócio e orquestra as operações com o repositório.
- * Segue o Princípio da Responsabilidade Única (SOLID).
- */
+
 @Service
 public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    /**
-     * Salva um novo usuário no sistema após realizar validações.
-     *
-     * @param usuario O objeto Usuario a ser salvo.
-     * @return O usuário salvo, geralmente com o ID preenchido.
-     * @throws IllegalArgumentException se o usuário for nulo, ou se o email já estiver em uso.
-     */
-    public Usuario salvar(Usuario usuario) {
-        // 1. Validação de Regras de Negócio
-        if (usuario == null) {
-            throw new IllegalArgumentException("O objeto de usuário não pode ser nulo.");
-        }
-        if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
-            throw new IllegalArgumentException("O email do usuário é obrigatório.");
-        }
-
-        // 2. Verifica se já existe um usuário com o mesmo email para evitar duplicatas
-        Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
-        if (usuarioExistente.isPresent()) {
-            throw new IllegalArgumentException("O email '" + usuario.getEmail() + "' já está cadastrado.");
-        }
+    public Usuario registrar(String nome, String email, String cpf, String telefone, LocalDateTime dataNascimento,
+                             String cidade, String endereco, boolean isOrganizador, String cnpj, String contaBancaria) {
         
-        // Em um sistema real, aqui seria o local ideal para criptografar a senha do usuário
-        // Ex: usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        if (usuarioRepository.findByEmail(email).isPresent()) {
+            throw new RuntimeException("Erro: O email '" + email + "' já está cadastrado.");
+        }
 
-        // 3. Delega a persistência para a camada de Repositório
-        return usuarioRepository.save(usuario);
+        if (isOrganizador) {
+            IOrganizadorBuilder builder = new OrganizadorBuilderConcreto();
+            Organizador novoOrganizador = ((OrganizadorBuilderConcreto) builder
+                .nome(nome)
+                .email(email)
+                .telefone(telefone)
+                .dataNascimento(dataNascimento)
+                .cidade(cidade)
+                .endereco(endereco))
+                .cnpj(cnpj)
+                .contaBancaria(contaBancaria)
+                .build();
+            return usuarioRepository.save((Organizador)novoOrganizador);
+        } else {
+            IUsuarioBuilder builder = new UsuarioBuilderConcreto();
+            Usuario novoUsuario = builder
+                .nome(nome)
+                .email(email)
+                .cpf(cpf)
+                .telefone(telefone)
+                .dataNascimento(dataNascimento)
+                .cidade(cidade)
+                .endereco(endereco)
+                .build();
+            return usuarioRepository.save(novoUsuario);
+        }
     }
 
-    /**
-     * Busca um usuário pelo seu email.
-     *
-     * @param email O email a ser buscado.
-     * @return um Optional contendo o usuário se encontrado, ou um Optional vazio caso contrário.
-     */
-    public Optional<Usuario> buscarPorEmail(String email) {
-        if (email == null || email.trim().isEmpty()) {
-            return Optional.empty();
-        }
+    public Optional<Usuario> autenticar(String email) {
         return usuarioRepository.findByEmail(email);
+    }
+    public Organizador obterOuCriarOrganizadorPadrao() {
+        String emailPadrao = "contato@xogum.com";
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(emailPadrao);
+
+        if (usuarioOpt.isPresent() && usuarioOpt.get() instanceof Organizador) {
+            return (Organizador) usuarioOpt.get();
+        } else {
+            Organizador organizadorPadrao = new Organizador();
+            organizadorPadrao.setNome("XOGUM Eventos");
+            organizadorPadrao.setEmail(emailPadrao);
+            return (Organizador) usuarioRepository.save(organizadorPadrao);
+        }
+    }
+    
+    public Usuario save(Usuario usuario) {
+        return usuarioRepository.save(usuario);
     }
 }
