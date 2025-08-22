@@ -1,6 +1,6 @@
-package sitedeeventos.service.strategy;
+package io.github.site_de_eventos.sitedeeventos.service.strategy;
 
-import sitedeeventos.model.Pedido;
+import io.github.site_de_eventos.sitedeeventos.model.Pedido;
 
 public class CalculoComTaxaServico implements ICalculoPrecoPedidoStrategy{
 	private static final double TAXA_SERVICO = 0.05;

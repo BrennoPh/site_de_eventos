@@ -1,8 +1,9 @@
-package sitedeeventos.model.builder;
+package io.github.site_de_eventos.sitedeeventos.model.builder;
 
-import sitedeeventos.model.Usuario;
-import sitedeeventos.model.Pedido;
 import java.time.LocalDateTime;
+
+import io.github.site_de_eventos.sitedeeventos.model.Pedido;
+import io.github.site_de_eventos.sitedeeventos.model.Usuario;
 
 public interface IUsuarioBuilder {
 	public IUsuarioBuilder idUsuario(int idUsuario);

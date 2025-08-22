@@ -1,4 +1,4 @@
-package sitedeeventos.model;
+package io.github.site_de_eventos.sitedeeventos.model;
 
 public class Organizador extends Usuario {
 	private String contaBancaria;

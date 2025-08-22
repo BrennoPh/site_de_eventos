@@ -1,7 +1,8 @@
-package sitedeeventos.model;
+package io.github.site_de_eventos.sitedeeventos.model;
 
-import sitedeeventos.model.builder.IUsuarioBuilder;
 import java.time.LocalDateTime;
+
+import io.github.site_de_eventos.sitedeeventos.model.builder.IUsuarioBuilder;
 
 public class UsuarioBuilderConcreto implements IUsuarioBuilder{
 	private Usuario usuario;

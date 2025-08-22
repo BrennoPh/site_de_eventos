@@ -1,4 +1,4 @@
-package sitedeeventos.controller;
+package io.github.site_de_eventos.sitedeeventos.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import sitedeeventos.model.Usuario;
-import sitedeeventos.model.UsuarioBuilderConcreto;
-import sitedeeventos.model.builder.IUsuarioBuilder;
-import sitedeeventos.service.UsuarioService;
+import io.github.site_de_eventos.sitedeeventos.model.Usuario;
+import io.github.site_de_eventos.sitedeeventos.model.UsuarioBuilderConcreto;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IUsuarioBuilder;
+import io.github.site_de_eventos.sitedeeventos.service.UsuarioService;
 
 @Controller
 public class UsuarioController {

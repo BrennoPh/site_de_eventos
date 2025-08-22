@@ -1,6 +1,6 @@
-package sitedeeventos.model;
+package io.github.site_de_eventos.sitedeeventos.model;
 
-import sitedeeventos.model.builder.IOrganizadorBuilder;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IOrganizadorBuilder;
 
 public class OrganizadorBuilderConcreto extends UsuarioBuilderConcreto implements IOrganizadorBuilder{
 	private Organizador organizador;

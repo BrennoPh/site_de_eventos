@@ -1,18 +1,18 @@
 
-package sitedeeventos.service;
-
-import sitedeeventos.model.Evento;
-import sitedeeventos.model.Ingresso;
-import sitedeeventos.model.Pedido;
-import sitedeeventos.model.Usuario;
-import sitedeeventos.repository.EventoRepository;
-import sitedeeventos.repository.UsuarioRepository;
-import sitedeeventos.service.strategy.ICalculoPrecoPedidoStrategy;
+package io.github.site_de_eventos.sitedeeventos.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import io.github.site_de_eventos.sitedeeventos.model.Evento;
+import io.github.site_de_eventos.sitedeeventos.model.Ingresso;
+import io.github.site_de_eventos.sitedeeventos.model.Pedido;
+import io.github.site_de_eventos.sitedeeventos.model.Usuario;
+import io.github.site_de_eventos.sitedeeventos.repository.EventoRepository;
+import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
+import io.github.site_de_eventos.sitedeeventos.service.strategy.ICalculoPrecoPedidoStrategy;
 
 public class PedidoService {
 

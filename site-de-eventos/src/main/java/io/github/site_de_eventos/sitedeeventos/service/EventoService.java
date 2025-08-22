@@ -1,4 +1,4 @@
-package sitedeeventos.service;
+package io.github.site_de_eventos.sitedeeventos.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import sitedeeventos.model.Evento;
-import sitedeeventos.repository.EventoRepository;
+import io.github.site_de_eventos.sitedeeventos.model.Evento;
+import io.github.site_de_eventos.sitedeeventos.repository.EventoRepository;
 
 /**
  * Camada de Serviço para a entidade Evento.

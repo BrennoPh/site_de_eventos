@@ -1,13 +1,15 @@
-package sitedeeventos.repository.impl;
-import sitedeeventos.model.Usuario;
-import sitedeeventos.repository.UsuarioRepository;
-import org.springframework.stereotype.Repository;
+package io.github.site_de_eventos.sitedeeventos.repository.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 //A anotação Repository indica ao Spring que esta classe é um componente da camada de persistência.
+
+import org.springframework.stereotype.Repository;
+
+import io.github.site_de_eventos.sitedeeventos.model.Usuario;
+import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
 
 @Repository
 public class UsuarioRepositoryImpl implements UsuarioRepository {

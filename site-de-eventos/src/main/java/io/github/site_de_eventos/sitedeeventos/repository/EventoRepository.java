@@ -1,9 +1,9 @@
-package sitedeeventos.repository;
+package io.github.site_de_eventos.sitedeeventos.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import sitedeeventos.model.Evento;
+import io.github.site_de_eventos.sitedeeventos.model.Evento;
 
 public interface EventoRepository {
 	Evento save(Evento evento);

@@ -1,7 +1,8 @@
-package sitedeeventos.model;
+package io.github.site_de_eventos.sitedeeventos.model;
 
-import sitedeeventos.model.builder.IEventoBuilder;
 import java.time.LocalDateTime;
+
+import io.github.site_de_eventos.sitedeeventos.model.builder.IEventoBuilder;
 
 public class EventoBuilderConcreto implements IEventoBuilder{
 	private Evento evento;

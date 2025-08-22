@@ -1,8 +1,9 @@
-package sitedeeventos.model.builder;
+package io.github.site_de_eventos.sitedeeventos.model.builder;
 
-import sitedeeventos.model.Evento;
 import java.time.LocalDateTime;
-import sitedeeventos.model.Organizador;
+
+import io.github.site_de_eventos.sitedeeventos.model.Evento;
+import io.github.site_de_eventos.sitedeeventos.model.Organizador;
 
 
 public interface IEventoBuilder {

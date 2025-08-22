@@ -1,4 +1,4 @@
-package sitedeeventos.controller;
+package io.github.site_de_eventos.sitedeeventos.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import sitedeeventos.model.Evento;
-import sitedeeventos.model.EventoBuilderConcreto;
-import sitedeeventos.model.Organizador; // Importe a classe Organizador
-import sitedeeventos.model.OrganizadorBuilderConcreto;
-import sitedeeventos.model.builder.IEventoBuilder;
-import sitedeeventos.model.builder.IOrganizadorBuilder; // Importe a interface do Builder
-import sitedeeventos.service.EventoService;
+import io.github.site_de_eventos.sitedeeventos.model.Evento;
+import io.github.site_de_eventos.sitedeeventos.model.EventoBuilderConcreto;
+import io.github.site_de_eventos.sitedeeventos.model.Organizador;
+import io.github.site_de_eventos.sitedeeventos.model.OrganizadorBuilderConcreto;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IEventoBuilder;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IOrganizadorBuilder;
+import io.github.site_de_eventos.sitedeeventos.service.EventoService;
 
 @Controller
 public class EventoController {

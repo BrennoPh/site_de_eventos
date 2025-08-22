@@ -1,4 +1,4 @@
-package sitedeeventos.controller;
+package io.github.site_de_eventos.sitedeeventos.controller;
 
 public class PedidoController {
 

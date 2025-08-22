@@ -1,9 +1,5 @@
-package sitedeeventos.repository.impl;
+package io.github.site_de_eventos.sitedeeventos.repository.impl;
 
-
-import sitedeeventos.model.Evento;
-import sitedeeventos.repository.EventoRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +7,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.springframework.stereotype.Repository;
+
+import io.github.site_de_eventos.sitedeeventos.model.Evento;
+import io.github.site_de_eventos.sitedeeventos.repository.EventoRepository;
 
 
 @Repository
