@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Pedido</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="pedido-container">
+        <div class="evento-detalhe" th:if="${evento}">
+            <img th:src="${evento.urlImagem}" alt="Imagem do Evento">
+            <h1 th:text="${evento.nome}">Nome do Evento</h1>
+            <p class="meta-info">
+                <span th:text="${#dates.format(evento.data, 'dd MMM yyyy')}">Data</span> |
+                <span th:text="${evento.local}">Local</span>
+            </p>
+        </div>
+        <div class="resumo-pedido">
+            <h3>Resumo do Pedido</h3>
+            <p>Ingresso: 1 x Evento "<span th:text="${evento.nome}">Nome do Evento</span>"</p>
+            <p class="big" style="text-align: center; margin: 2rem 0;">Total: R$ 50,00</p> </div>
+
+        <form action="/pedidos" method="POST">
+            <input type="hidden" name="eventoId" th:value="${evento.id}" />
+            <input type="hidden" name="usuarioId" value="1" /> 
+            <button type="submit" class="btn-accent" style="width:100%;">Confirmar Compra</button>
+        </form>
+    </div>
+</body>
+</html>
