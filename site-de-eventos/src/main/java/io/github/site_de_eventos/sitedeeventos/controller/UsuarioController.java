@@ -1,14 +1,20 @@
 package io.github.site_de_eventos.sitedeeventos.controller;
 
+import java.time.LocalDate;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpSession;
 import io.github.site_de_eventos.sitedeeventos.model.Usuario;
-import io.github.site_de_eventos.sitedeeventos.model.UsuarioBuilderConcreto;
-import io.github.site_de_eventos.sitedeeventos.model.builder.IUsuarioBuilder;
 import io.github.site_de_eventos.sitedeeventos.service.UsuarioService;
 
 @Controller
@@ -17,39 +23,62 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    /**
-     * Mapeia a requisição GET para /login e retorna a página de login.
-     * @return o nome do template "login.html"
-     */
-    @GetMapping("/login")
-    public String exibirPaginaLogin() {
-        return "login"; // Retorna o arquivo templates/login.html
+    @GetMapping("/cadastro")
+    public String exibirFormularioCadastro() {
+        return "cadastro";
     }
 
-    /**
-     * Mapeia a requisição POST para /usuarios para criar um novo usuário.
-     * Os dados vêm do formulário de login/cadastro.
-     * @param nome O nome do usuário vindo do formulário.
-     * @param email O email do usuário vindo do formulário.
-     * @param senha A senha do usuário vinda do formulário.
-     * @return Redireciona para a página inicial ("/") após o cadastro.
-     */
-    @PostMapping("/usuarios")
-    public String criarUsuario(@RequestParam String nome, @RequestParam String email, @RequestParam String senha) {
-        
-        // Usando o Design Pattern Builder que já existe no seu projeto para criar o objeto Usuario
-        IUsuarioBuilder builder = new UsuarioBuilderConcreto();
-        Usuario novoUsuario = builder
-                                .nome(nome)
-                                .email(email) // Em um projeto real, a senha deveria ser criptografada aqui
-                                .build();
+    @PostMapping("/cadastro")
+    public String processarCadastro(
+            // Parâmetros de Usuário (obrigatórios)
+            @RequestParam String nome,
+            @RequestParam String email,
+            // Parâmetros de Usuário (opcionais)
+            @RequestParam(required = false) String cpf,
+            @RequestParam(required = false) String telefone,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataNascimento,
+            @RequestParam(required = false) String cidade,
+            @RequestParam(required = false) String endereco,
+            // Parâmetro de tipo
+            @RequestParam(defaultValue = "false") boolean isOrganizador,
+            // Parâmetros de Organizador (opcionais)
+            @RequestParam(required = false) String cnpj,
+            @RequestParam(required = false) String contaBancaria,
+            Model model) {
+        try {
+            // Converte LocalDate para LocalDateTime, se a data for fornecida
+            LocalDateTime dataNascimentoTime = (dataNascimento != null) ? dataNascimento.atStartOfDay() : null;
 
-        // Salva o novo usuário usando o service
-        usuarioService.salvar(novoUsuario);
+            usuarioService.registrar(nome, email, cpf, telefone, dataNascimentoTime, cidade, endereco, isOrganizador, cnpj, contaBancaria);
+            
+            model.addAttribute("sucesso", "Cadastro realizado! Faça o login para continuar.");
+            return "login";
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            return "cadastro";
+        }
+    }
 
-        System.out.println("Novo usuário criado: " + novoUsuario.getNome());
+    @GetMapping("/login")
+    public String exibirFormularioLogin() {
+        return "login";
+    }
 
-        // Redireciona para a página inicial após o sucesso
+    @PostMapping("/login")
+    public String processarLogin(@RequestParam String email, HttpSession session, Model model) {
+        Optional<Usuario> usuarioOpt = usuarioService.autenticar(email);
+        if (usuarioOpt.isPresent()) {
+            session.setAttribute("usuarioLogado", usuarioOpt.get());
+            return "redirect:/";
+        } else {
+            model.addAttribute("erro", "Email não encontrado. Verifique os dados ou cadastre-se.");
+            return "login";
+        }
+    }
+    
+    @GetMapping("/logout")
+    public String processarLogout(HttpSession session) {
+        session.invalidate();
         return "redirect:/";
     }
 }
