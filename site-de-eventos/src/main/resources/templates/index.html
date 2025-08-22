@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Plataforma de Eventos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">XOGUM</div>
+            <div class="search"><input id="searchInput" placeholder="Buscar eventos..." autocomplete="off" /></div>
+
+            <nav class="header-nav" style="display: flex; gap: 1rem; align-items: center;">
+                <a href="/eventos/novo" style="color: var(--white); text-decoration: none;">Criar Evento</a>
+                <a href="/mapa" style="color: var(--white); text-decoration: none;">Mapa</a>
+                <a href="/meus-eventos" style="color: var(--white); text-decoration: none;">Meus Ingressos</a>
+            </nav>
+
+            <a href="/login" title="Acessar perfil ou cadastrar">
+                <div class="profile">S</div>
+            </a>
+        </header>
+
+        <div class="controls">
+            <div class="chip" id="cityChip">Aracaju</div>
+            <div class="chip" id="dateChip">Este mês</div>
+            <div class="chip" id="filterChip">Filtros</div>
+        </div>
+
+        <section class="hero">
+            <div class="left">
+                <h1>Ei, sua próxima experiência está aqui!</h1>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="big">0</div>
+                        <div class="small">Horas de festa</div>
+                    </div>
+                    <div class="stat">
+                        <div class="big" id="eventsCount">0</div>
+                        <div class="small">Eventos encontrados</div>
+                    </div>
+                </div>
+            </div>
+            <div class="right" style="min-width:120px;display:flex;align-items:center;justify-content:center">
+                <button id="mapBtn" class="btn-accent">Explorar mapa</button>
+            </div>
+        </section>
+
+        <main>
+    <div id="events" class="events">
+        <div class="card" th:each="evento : ${eventos}">
+            <div class="thumb" th:style="'background-image: url(' + (${evento.urlImagem != null ? evento.urlImagem : 'https://via.placeholder.com/400x200?text=Evento'}) + ')'"></div>
+            <div class="body">
+                <h3 th:text="${evento.nomeEvento}">Título do Evento</h3>
+                <div class="meta">
+                    <span th:text="'📅 ' + ${#temporals.format(evento.dataEvento, 'dd MMM, HH:mm')}"></span>
+                    <span th:text="'📍 ' + ${evento.local}"></span>
+                </div>
+                <div class="tags">
+                    <div class="tag" th:text="${evento.categoria}">Categoria</div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-muted">Detalhes</button>
+                    <a th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent" style="text-decoration: none;">Ingressos</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-card" th:if="${eventos.isEmpty()}">
+            Nenhum evento encontrado. <a href="/eventos/novo">Crie o primeiro!</a>
+        </div>
+    </div>
+</main>
+    </div>
+
+    <div id="mapModal" class="modal" aria-hidden="true">
+        <div class="sheet map-sheet" role="dialog">
+            <div class="map-header">
+                <h3>Mapa — Eventos próximos</h3>
+                <div>
+                    <button id="locateBtn" class="btn-muted">Minha localização</button>
+                    <button id="closeMap" class="btn-muted">Fechar</button>
+                </div>
+            </div>
+            <div id="map" class="map"></div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal" aria-hidden="true">
+        <div class="sheet" role="dialog">
+            <h3 id="modalTitle">Ingressos</h3>
+            <div id="ticketsList"></div>
+            <div class="modal-actions">
+                <button id="closeModal" class="btn-muted">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <div class="nav-inner">
+            <div class="nav-button">⚡</div>
+            <div class="nav-button">🔍</div>
+            <div class="nav-button">🎫</div>
+            <div class="nav-button">☺</div>
+        </div>
+    </nav>
+
+    <script th:src="|https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap&libraries=places|"
+        async defer></script>
+
+    <script>
+        // Variáveis globais para o mapa
+        let map;
+        let userMarker;
+        let eventMarkers = [];
+
+        // Função de inicialização chamada pelo script do Google Maps
+        function initMap() {
+            const initialCoords = { lat: -10.9472, lng: -37.0731 };
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+                center: initialCoords,
+                disableDefaultUI: true,
+            });
+        }
+
+        function getCurrentLocation(options) {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    return reject(new Error('Geolocation não suportado'));
+                }
+                navigator.geolocation.getCurrentPosition(resolve, reject, options);
+            });
+        }
+
+        function setUserLocation(lat, lng) {
+            if (!map) return;
+            if (userMarker) { userMarker.setMap(null); }
+            userMarker = new google.maps.Marker({
+                position: { lat, lng },
+                map,
+                title: 'Você',
+                icon: { path: google.maps.SymbolPath.CIRCLE, scale: 8, fillColor: '#4285F4', fillOpacity: 1, strokeWeight: 2, strokeColor: '#fff' }
+            });
+        }
+
+        // CORREÇÃO 3: Simulação de API com dados mais completos para preencher os cards
+        async function apiFetch(url) {
+            console.log("Buscando dados da API em:", url);
+            // Retornando dados de exemplo mais completos para teste
+            return [
+                { id: 1, title: "Festival de Verão", latitude: -10.9472, longitude: -37.0731, date: "25 DEZ", location: "Praça de Eventos", tags: ['Rock', 'Ao vivo'], imageUrl: 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=500' },
+                { id: 2, title: "Feira de Artesanato Local", latitude: -10.9113, longitude: -37.0513, date: "28 DEZ", location: "Orla de Atalaia", tags: ['Cultura', 'Família'], imageUrl: 'https://images.unsplash.com/photo-1511578194003-062c1e61dc3e?w=500' },
+                { id: 3, title: "Concerto de Jazz na Praia", latitude: -10.93, longitude: -37.06, date: "30 DEZ", location: "Teatro Tobias Barreto", tags: ['Música', 'Jazz'], imageUrl: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=500' }
+            ];
+        }
+
+        async function fetchEventsNearby(lat, lng, radiusMeters = 50000) {
+            try {
+                const params = new URLSearchParams({ lat: lat, lng: lng, radius: radiusMeters });
+                const events = await apiFetch('/events/nearby?' + params.toString());
+                placeEventMarkers(events || []);
+                renderEvents(events || []);
+                if (events && events.length) {
+                    const bounds = new google.maps.LatLngBounds();
+                    events.forEach(ev => { bounds.extend({ lat: ev.latitude, lng: ev.longitude }); });
+                    if (userMarker) bounds.extend(userMarker.getPosition());
+                    map.fitBounds(bounds);
+                }
+            } catch (err) { console.error('Erro ao buscar eventos por proximidade', err); alert('Erro ao buscar eventos próximos') }
+        }
+
+        function placeEventMarkers(events) {
+            eventMarkers.forEach(m => m.setMap(null));
+            eventMarkers = [];
+            events.forEach(ev => {
+                if (typeof ev.latitude !== 'number' || typeof ev.longitude !== 'number') return;
+                const pos = { lat: ev.latitude, lng: ev.longitude };
+                const marker = new google.maps.Marker({ position: pos, map, title: ev.title });
+                marker.addListener('click', async () => {
+                    try {
+                        const full = await apiFetch(`/events/${ev.id}`);
+                        showTicketsModal(full[0]); // Pega o primeiro item do array de exemplo
+                    } catch (err) { console.error(err); }
+                });
+                eventMarkers.push(marker);
+            });
+        }
+
+        // CORREÇÃO 2: A função renderEvents agora gera o HTML completo do card, usando as classes do CSS
+        function renderEvents(events) {
+            const container = document.getElementById('events');
+            document.getElementById('eventsCount').innerText = events.length;
+
+            if (!events || events.length === 0) {
+                container.innerHTML = '<div class="empty-card">Nenhum evento encontrado.</div>';
+                return;
+            }
+
+            container.innerHTML = events.map(event => `
+                <div class="card">
+                    <div class="thumb" style="background-image: url('${event.imageUrl || 'https://via.placeholder.com/400x200?text=Evento'}')"></div>
+                    <div class="body">
+                        <h3>${event.title || 'Título do Evento'}</h3>
+                        <div class="meta">
+                            <span>📅 ${event.date || 'Data a definir'}</span>
+                            <span>📍 ${event.location || 'Local a definir'}</span>
+                        </div>
+                        <div class="tags">
+                            ${(event.tags || ['Geral']).map(tag => `<div class="tag">${tag}</div>`).join('')}
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-muted" onclick="viewDetails(${event.id})">Detalhes</button>
+                            <a href="/pedidos/evento/${event.id}" class="btn-accent" style="text-decoration: none;">Ingressos</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Função de exemplo para o novo botão "Detalhes"
+        function viewDetails(eventId) {
+            alert('Exibindo detalhes para o evento ID: ' + eventId);
+            // Futuramente, você pode abrir um modal com mais informações aqui.
+        }
+
+        function showTicketsModal(event) {
+            alert(`Mostrando ingressos para: ${event.title}`);
+        }
+
+        // --- Event Listeners ---
+        let debounceTimer;
+        document.getElementById('searchInput').addEventListener('input', e => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => fetchEvents(e.target.value), 400);
+        });
+
+        async function fetchEvents(query = '') {
+            console.log(`Buscando eventos com o termo: "${query}"`);
+            try {
+                const events = await apiFetch('/events/search?q=' + query);
+                renderEvents(events);
+            } catch (err) {
+                console.error("Falha ao buscar eventos: ", err);
+                document.getElementById('events').innerHTML = '<div class="empty-card">Erro ao carregar eventos. Tente novamente.</div>';
+            }
+        }
+
+        // --- Carga Inicial ---
+        // Garante que o script roda após o carregamento completo da página
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchEvents();
+        });
+    </script>
+</body>
+
+</html>
