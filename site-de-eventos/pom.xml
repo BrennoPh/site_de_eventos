@@ -18,6 +18,7 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <google.maps.api-key></google.maps.api-key>
+        <server.port>8080</server.port>
     </properties>
     <dependencies>
         <dependency>

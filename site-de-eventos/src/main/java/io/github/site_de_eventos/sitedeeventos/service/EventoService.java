@@ -56,9 +56,9 @@ public class EventoService {
     }
 
     public Optional<Evento> buscarPorId(Long id) {
-        if (id == null || id <= 0) {
+        if (id == null || id <= 0L) {
             return Optional.empty();
         }
-        return eventoRepository.findById(id);
+        return eventoRepository.findById(Math.toIntExact(id));
     }
 }

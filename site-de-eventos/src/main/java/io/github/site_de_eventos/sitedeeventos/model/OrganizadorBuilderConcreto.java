@@ -25,6 +25,6 @@ public class OrganizadorBuilderConcreto extends UsuarioBuilderConcreto implement
 	}
 	
 	public Organizador build() {
-		return organizador;
+		return this.organizador;
 	}
 }

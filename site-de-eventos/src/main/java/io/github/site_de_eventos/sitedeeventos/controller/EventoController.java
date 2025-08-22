@@ -53,7 +53,10 @@ public class EventoController {
         IOrganizadorBuilder organizadorBuilder = new OrganizadorBuilderConcreto();
         
         // 2. Configure o builder e, em seguida, chame .build() para criar o objeto Organizador final.
-        Organizador organizadorFinal = organizadorBuilder.idUsuario(1).nome("Organizador Principal").build();
+        Organizador organizadorFinal = (Organizador)organizadorBuilder
+        		.idUsuario(1)
+        		.nome("Organizador Principal")
+        		.build();
 
         // 3. Agora, construa o Evento, passando o objeto 'organizadorFinal' que acabamos de criar.
         IEventoBuilder builder = new EventoBuilderConcreto();
