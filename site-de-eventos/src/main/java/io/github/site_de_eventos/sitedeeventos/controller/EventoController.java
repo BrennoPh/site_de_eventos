@@ -18,6 +18,7 @@ import io.github.site_de_eventos.sitedeeventos.model.Organizador;
 import io.github.site_de_eventos.sitedeeventos.model.OrganizadorBuilderConcreto;
 import io.github.site_de_eventos.sitedeeventos.model.builder.IEventoBuilder;
 import io.github.site_de_eventos.sitedeeventos.model.builder.IOrganizadorBuilder;
+import io.github.site_de_eventos.sitedeeventos.repository.OrganizadorRepository;
 import io.github.site_de_eventos.sitedeeventos.service.EventoService;
 
 @Controller
@@ -25,6 +26,12 @@ public class EventoController {
 
     @Autowired
     private EventoService eventoService;
+    private OrganizadorRepository organizadorRepository;		
+    
+    public EventoController(EventoService eventoService, OrganizadorRepository organizadorRepository) {
+    	this.eventoService = eventoService;
+    	this.organizadorRepository = organizadorRepository;
+    }
 
     @GetMapping("/")
     public String index(Model model) {
@@ -39,7 +46,7 @@ public class EventoController {
         return "criar-evento";
     }
 
-    @PostMapping("/eventos")
+    @PostMapping("/")
     public String criarEvento(
             @RequestParam String nomeEvento,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataEvento,
@@ -48,15 +55,8 @@ public class EventoController {
             @RequestParam String categoria,
             @RequestParam double preco) {
 
-        // **A CORREÇÃO DEFINITIVA ESTÁ AQUI**
-        // 1. Instancie o Builder do Organizador.
-        IOrganizadorBuilder organizadorBuilder = new OrganizadorBuilderConcreto();
-        
-        // 2. Configure o builder e, em seguida, chame .build() para criar o objeto Organizador final.
-        Organizador organizadorFinal = (Organizador)organizadorBuilder
-        		.idUsuario(1)
-        		.nome("Organizador Principal")
-        		.build();
+        Organizador organizadorExistente = organizadorRepository.findById(1).orElseThrow(() -> new IllegalStateException("ERRO: Organizador com ID 1 não foi encontrado no banco de dados."));
+
 
         // 3. Agora, construa o Evento, passando o objeto 'organizadorFinal' que acabamos de criar.
         IEventoBuilder builder = new EventoBuilderConcreto();
@@ -67,7 +67,7 @@ public class EventoController {
                             .descricao(descricao)
                             .categoria(categoria)
                             .preco(preco)
-                            .organizador(organizadorFinal) // Agora está correto!
+                            .organizador(organizadorExistente) // Agora está correto!
                             .build();
         
         eventoService.save(novoEvento);
