@@ -17,7 +17,7 @@
             <div class="brand">XOGUM</div>
             <div class="search"><input id="searchInput" placeholder="Buscar eventos..." autocomplete="off" /></div>
             <nav class="header-nav" style="display: flex; gap: 1rem; align-items: center; white-space: nowrap;">
-                <a th:if="${session.usuarioLogado instanceof T(sitedeeventos.model.Organizador)}" href="/eventos/novo"
+                <a th:if="${session.usuarioLogado instanceof T(io.github.site_de_eventos.sitedeeventos.model.Organizador)}" href="/eventos/novo"
                     style="color: var(--white); text-decoration: none;">Criar Evento</a>
                 <a th:if="${session.usuarioLogado != null}" href="/meus-eventos"
                     style="color: var(--white); text-decoration: none;gap: 1rem;">Meus Ingressos</a>
@@ -100,5 +100,6 @@
         </div>
     </div>
 </body>
+
 
 </html>
