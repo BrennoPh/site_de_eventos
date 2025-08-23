@@ -57,10 +57,7 @@ public class PedidoService {
 
 		// ATRIBUIÇÃO: Definimos o valor final calculado no objeto pedido.
 		pedido.setValorTotal(valorFinalCalculado);
-
-		// O método da strategy agora irá calcular e SETAR o valor final no pedido.
-		strategy.calcularPreco(pedido);
-
+		
 		// CONFIRMAÇÃO: Finalizar o pedido, gerando ingressos e atualizando o estoque.
 		confirmarPedido(pedido);
 

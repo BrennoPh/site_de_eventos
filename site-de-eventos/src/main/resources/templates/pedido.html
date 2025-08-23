@@ -8,21 +8,31 @@
 <body>
     <div class="pedido-container">
         <div class="evento-detalhe" th:if="${evento}">
-            <img th:src="${evento.urlImagem}" alt="Imagem do Evento">
-            <h1 th:text="${evento.nome}">Nome do Evento</h1>
+            
+            <img src="https://source.unsplash.com/random/800x400/?party,concert" alt="Imagem do Evento" style="width:100%; height:auto; border-radius: 8px;">
+            
+            <h1 th:text="${evento.nomeEvento}">Nome do Evento</h1>
+            
             <p class="meta-info">
-                <span th:text="${#dates.format(evento.data, 'dd MMM yyyy')}">Data</span> |
+                <span th:text="${#temporals.format(evento.dataEvento, 'dd MMM yyyy')}">Data</span> |
                 <span th:text="${evento.local}">Local</span>
             </p>
         </div>
         <div class="resumo-pedido">
             <h3>Resumo do Pedido</h3>
-            <p>Ingresso: 1 x Evento "<span th:text="${evento.nome}">Nome do Evento</span>"</p>
-            <p class="big" style="text-align: center; margin: 2rem 0;">Total: R$ 50,00</p> </div>
+            
+            <p>Ingresso: 1 x Evento "<span th:text="${evento.nomeEvento}">Nome do Evento</span>"</p>
+            
+            <p class="big" style="text-align: center; margin: 2rem 0;">Total: R$ 50,00</p>
+        </div>
 
         <form action="/pedidos" method="POST">
-            <input type="hidden" name="eventoId" th:value="${evento.id}" />
+            <input type="hidden" name="eventoId" th:value="${evento.idEvento}" />
+            
             <input type="hidden" name="usuarioId" value="1" /> 
+            
+            <input type="hidden" name="quantidade" value="1" />
+            
             <button type="submit" class="btn-accent" style="width:100%;">Confirmar Compra</button>
         </form>
     </div>

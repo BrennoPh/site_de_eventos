@@ -12,8 +12,12 @@ import io.github.site_de_eventos.sitedeeventos.repository.EventoRepository;
 @Service
 public class EventoService {
 
-    @Autowired
     private EventoRepository eventoRepository;
+    
+    @Autowired
+    public EventoService(EventoRepository eventoRepository) {
+        this.eventoRepository = eventoRepository;
+    }
 
     public Evento save(Evento evento) {
         if (evento == null) {

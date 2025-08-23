@@ -4,8 +4,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 public class Pedido {
 	private int idPedido;
+	@JsonBackReference
 	private Usuario usuario;
 	private Evento evento;
 

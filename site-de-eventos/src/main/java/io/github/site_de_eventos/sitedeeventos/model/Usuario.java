@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 public class Usuario {
 	private int idUsuario;
 	private String nome;
@@ -13,6 +15,7 @@ public class Usuario {
 	private String cidade;
 	private String endereco;
 	private LocalDateTime dataNascimento;
+	@JsonManagedReference
 	private List<Pedido> pedidos;
 	
 	Usuario() {

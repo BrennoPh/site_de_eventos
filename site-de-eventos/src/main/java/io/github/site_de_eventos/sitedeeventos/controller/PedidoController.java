@@ -17,8 +17,14 @@ import io.github.site_de_eventos.sitedeeventos.service.PedidoService;
 @Controller
 public class PedidoController {
 
-    @Autowired private PedidoService pedidoService;
-    @Autowired private EventoService eventoService;
+    private PedidoService pedidoService;
+    private EventoService eventoService;
+    
+    @Autowired
+    public PedidoController(PedidoService pedidoService, EventoService eventoService) {
+        this.pedidoService = pedidoService;
+        this.eventoService = eventoService;
+    }
 
     @GetMapping("/pedidos/evento/{id}")
     public String exibirPaginaPedido(@PathVariable("id") int id, Model model) {

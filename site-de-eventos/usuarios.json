@@ -1,0 +1,2 @@
+{"idUsuario":1, "nome":"usuario", "email":"usuario@example.com", "tipo":"USUARIO"}
+{"idUsuario":2, "nome":"admin", "email":"adm@example.com", "tipo":"ORGANIZADOR", "cnpj":"123", "contaBancaria":"123"}
