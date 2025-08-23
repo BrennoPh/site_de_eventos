@@ -1,24 +1,30 @@
 package io.github.site_de_eventos.sitedeeventos.model;
 
+import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
 
 public class Ingresso {
-	private int idInscricao;
-	private int idEvento;
-	private String nomeParticipante;
-	private String emailParticipante;
-	private LocalDateTime dataCompra;
-	private double precoIngresso;
-	
-	public Ingresso(int idInscricao, int idEvento, String nomeParticipante, String emailParticipante, LocalDateTime dataCompra,
-			double precoIngresso) {
-		this.idInscricao = idInscricao;
-		this.idEvento = idEvento;
-		this.nomeParticipante = nomeParticipante;
-		this.emailParticipante = emailParticipante;
-		this.dataCompra = dataCompra;
-		this.precoIngresso = precoIngresso;
-	}
+    @Expose
+    private int idInscricao;
+    @Expose
+    private int idEvento;
+    @Expose
+    private String nomeParticipante;
+    @Expose
+    private String emailParticipante;
+    @Expose
+    private LocalDateTime dataCompra;
+    @Expose
+    private double precoIngresso;
+
+    public Ingresso(int idInscricao, int idEvento, String nomeParticipante, String emailParticipante, LocalDateTime dataCompra, double precoIngresso) {
+        this.idInscricao = idInscricao;
+        this.idEvento = idEvento;
+        this.nomeParticipante = nomeParticipante;
+        this.emailParticipante = emailParticipante;
+        this.dataCompra = dataCompra;
+        this.precoIngresso = precoIngresso;
+    }
 
 	public int getIdIncricao() {
 		return idInscricao;

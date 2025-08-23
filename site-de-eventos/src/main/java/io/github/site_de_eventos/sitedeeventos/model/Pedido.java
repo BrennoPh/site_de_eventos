@@ -1,34 +1,42 @@
 package io.github.site_de_eventos.sitedeeventos.model;
 
+import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 public class Pedido {
-	private int idPedido;
-	@JsonBackReference
-	private Usuario usuario;
-	private Evento evento;
+    @Expose
+    private int idPedido;
+    @Expose
+    private Evento evento;
+    @Expose
+    private int quantidadeIngressos;
+    @Expose
+    private double valorBase;
+    @Expose
+    private double valorTotal;
+    @Expose
+    private LocalDateTime dataPedido;
+    @Expose
+    private String status;
+    @Expose
+    private List<Ingresso> ingressos;
 
-	private List<Ingresso> ingressos;
+    // IMPORTANTE: O campo 'usuario' não deve ter @Expose para quebrar o loop infinito.
+    private Usuario usuario;
 
-	private int quantidadeIngressos;
-	private double valorBase;
-	private double valorTotal;
-	private LocalDateTime dataPedido;
-	private String status;
-
-	public Pedido(Usuario usuario, Evento evento, int quantidadeIngressos) {
-		this.usuario = usuario;
-		this.evento = evento;
-		this.quantidadeIngressos = quantidadeIngressos;
-		this.ingressos = new ArrayList<>();
-		this.dataPedido = LocalDateTime.now();
-		this.status = "PENDENTE";
-	}
-
+    // Construtor principal
+    public Pedido(Usuario usuario, Evento evento, int quantidade) {
+        this.usuario = usuario;
+        this.evento = evento;
+        this.quantidadeIngressos = quantidade;
+        this.dataPedido = LocalDateTime.now();
+        this.status = "PENDENTE";
+    }
+    
+    public Pedido() {} // Construtor padrão para o Gson
+    
+    
 	public int getIdPedido() {
 		return idPedido;
 	}

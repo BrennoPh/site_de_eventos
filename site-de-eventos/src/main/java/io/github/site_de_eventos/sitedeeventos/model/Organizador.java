@@ -1,13 +1,19 @@
 package io.github.site_de_eventos.sitedeeventos.model;
 
+import com.google.gson.annotations.Expose;
+
 public class Organizador extends Usuario {
-	private String contaBancaria;
-	private String cnpj;
-	private Evento eventoOrganizado;
-	
-	
-	Organizador() {
-	}
+    @Expose
+    private String contaBancaria;
+    @Expose
+    private String cnpj;
+    
+    // O campo eventoOrganizado não deve ser exposto para evitar referências circulares
+    private Evento eventoOrganizado;
+
+    public Organizador() { // Modificado para ser public
+        super();
+    }
 
 
 	public String getContaBancaria() {

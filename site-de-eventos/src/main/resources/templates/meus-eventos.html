@@ -12,18 +12,22 @@
         <p class="muted">Aqui estão os eventos que você já garantiu.</p>
 
         <div class="events" style="margin-top: 2rem;">
-            <div class="card">
-                <div class="thumb" style="background-image: url('https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=500')"></div>
+            <div class.card="card" th:each="pedido : ${pedidos}">
+                <div class.thumb="thumb" style="background-image: url('https://source.unsplash.com/random/400x200/?party,concert')"></div>
                 <div class="body">
-                    <h3>Festival de Verão</h3>
+                    <h3 th:text="${pedido.evento.nomeEvento}">Nome do Evento</h3>
                     <div class="meta">
-                        <span>📅 25 DEZ</span>
-                        <span>📍 Praça de Eventos</span>
+                        <span th:text="'📅 ' + ${#temporals.format(pedido.evento.dataEvento, 'dd MMM, HH:mm')}"></span>
+                        <span th:text="'📍 ' + ${pedido.evento.local}"></span>
                     </div>
                     <div class="card-actions" style="justify-content: flex-start; margin-top: 1rem;">
-                        <span class="tag" style="background-color: var(--accent);">Confirmado</span>
+                        <span class="tag" style="background-color: var(--accent);" th:text="${pedido.status}">Confirmado</span>
                     </div>
                 </div>
+            </div>
+
+            <div class="empty-card" th:if="${pedidos == null || pedidos.isEmpty()}">
+                Você ainda não comprou nenhum ingresso. <a href="/">Veja os próximos eventos!</a>
             </div>
         </div>
     </div>

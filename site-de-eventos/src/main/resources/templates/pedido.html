@@ -29,7 +29,7 @@
         <form action="/pedidos" method="POST">
             <input type="hidden" name="eventoId" th:value="${evento.idEvento}" />
             
-            <input type="hidden" name="usuarioId" value="1" /> 
+            <input type="hidden" name="usuarioId" th:if="${session.usuarioLogado != null}" th:value="${session.usuarioLogado.idUsuario}" />
             
             <input type="hidden" name="quantidade" value="1" />
             

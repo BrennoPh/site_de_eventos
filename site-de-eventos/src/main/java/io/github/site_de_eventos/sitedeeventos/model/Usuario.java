@@ -1,26 +1,35 @@
 package io.github.site_de_eventos.sitedeeventos.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 public class Usuario {
-	private int idUsuario;
-	private String nome;
-	private String email;
-	private String cpf;
-	private String telefone;
-	private String cidade;
-	private String endereco;
-	private LocalDateTime dataNascimento;
-	@JsonManagedReference
-	private List<Pedido> pedidos;
-	
-	Usuario() {
-	 this.pedidos = new ArrayList<>();
-	}
+    @Expose
+    private int idUsuario;
+    @Expose
+    private String nome;
+    @Expose
+    private String email;
+    @Expose
+    private String cpf;
+    @Expose
+    private String telefone;
+    @Expose
+    private String cidade;
+    @Expose
+    private String endereco;
+    @Expose
+    private LocalDateTime dataNascimento;
+    @Expose
+    @JsonManagedReference
+    private List<Pedido> pedidos;
+
+    public Usuario() { // Modificado para ser public
+        this.pedidos = new ArrayList<>();
+    }
 
 	public int getIdUsuario() {
 		return idUsuario;

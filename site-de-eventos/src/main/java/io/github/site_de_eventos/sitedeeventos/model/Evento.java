@@ -1,22 +1,34 @@
 package io.github.site_de_eventos.sitedeeventos.model;
 
+import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
 
 public class Evento {
-	private int idEvento;
-	private int capacidade;
-	private int ingressosDisponiveis;
-	private String nomeEvento;
-	private String local;
-	private String categoria;
-	private Organizador organizador;
-	private String descrição;
-	private double preco;
-	private LocalDateTime dataEvento;
-	
-	Evento() {
-	}
-	
+    @Expose
+    private int idEvento;
+    @Expose
+    private int capacidade;
+    @Expose
+    private int ingressosDisponiveis;
+    @Expose
+    private String nomeEvento;
+    @Expose
+    private String local;
+    @Expose
+    private String categoria;
+    
+    // Não exponha o organizador inteiro para evitar loops. Salvaremos apenas o ID.
+    private Organizador organizador;
+    
+    @Expose
+    private String descrição;
+    @Expose
+    private double preco;
+    @Expose
+    private LocalDateTime dataEvento;
+
+    public Evento() {} // Modificado para ser public
+
 	
 	//Getters
 	public int getIdEvento() {
