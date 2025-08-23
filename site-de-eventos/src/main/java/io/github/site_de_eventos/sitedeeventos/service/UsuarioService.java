@@ -66,9 +66,10 @@ public class UsuarioService {
         if (usuarioOpt.isPresent() && usuarioOpt.get() instanceof Organizador) {
             return (Organizador) usuarioOpt.get();
         } else {
-            Organizador organizadorPadrao = new Organizador();
-            organizadorPadrao.setNome("XOGUM Eventos");
-            organizadorPadrao.setEmail(emailPadrao);
+            Organizador organizadorPadrao = (Organizador) new OrganizadorBuilderConcreto()
+            		.nome("XOGUM Eventos")
+            		.email(emailPadrao)
+            		.build();
             return (Organizador) usuarioRepository.save(organizadorPadrao);
         }
     }
