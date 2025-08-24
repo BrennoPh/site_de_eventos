@@ -1,16 +1,5 @@
 package io.github.site_de_eventos.sitedeeventos.repository.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.github.site_de_eventos.sitedeeventos.model.Evento;
-import io.github.site_de_eventos.sitedeeventos.repository.EventoRepository;
-import jakarta.annotation.PostConstruct;
-import org.springframework.stereotype.Repository;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -24,6 +13,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Repository;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+
+import io.github.site_de_eventos.sitedeeventos.model.Evento;
+import io.github.site_de_eventos.sitedeeventos.repository.EventoRepository;
+import jakarta.annotation.PostConstruct;
 
 @Repository
 public class EventoArquivoRepository implements EventoRepository {
@@ -83,6 +86,20 @@ public class EventoArquivoRepository implements EventoRepository {
                 .filter(evento -> evento.getNomeEvento().equalsIgnoreCase(nome))
                 .findFirst();
     }
+    @Override
+    public List<Evento> findByNomeContaining(String termo) {
+    // Se a busca for nula ou vazia, retorna todos os eventos.
+            if (termo == null || termo.trim().isEmpty()) {
+                return findAll();
+            }
+            // Converte o termo de busca para minúsculas para uma comparação case-insensitive.
+            String termoLowerCase = termo.toLowerCase();
+            
+            // Filtra a lista de eventos na memória.
+            return database.values().stream()
+                    .filter(evento -> evento.getNomeEvento().toLowerCase().contains(termoLowerCase))
+                    .collect(Collectors.toList());
+        }
 
     @Override
     public List<Evento> findAll() {

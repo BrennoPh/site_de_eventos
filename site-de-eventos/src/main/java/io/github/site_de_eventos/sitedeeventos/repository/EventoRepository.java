@@ -14,6 +14,8 @@ public interface EventoRepository {
 
 	List<Evento> findAll();
 
+	List<Evento> findByNomeContaining(String termo);
+
 	boolean deleteById(int id);
 
 }

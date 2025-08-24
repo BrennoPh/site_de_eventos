@@ -14,20 +14,30 @@
 <body>
     <div class="container">
         <header>
-            <div class="brand">XOGUM</div>
-            <div class="search"><input id="searchInput" placeholder="Buscar eventos..." autocomplete="off" /></div>
-            <nav class="header-nav" style="display: flex; gap: 1rem; align-items: center; white-space: nowrap;">
-                <a th:if="${session.usuarioLogado instanceof T(io.github.site_de_eventos.sitedeeventos.model.Organizador)}" href="/eventos/novo"
-                    style="color: var(--white); text-decoration: none;">Criar Evento</a>
+            <div class="brand">
+                <a href="/"><img th:src="@{/images/logo.png}" alt="Logo XOGUM"
+                        style="height: 90px; display: block;"></a>
+            </div>
+
+            <div class="search-container" style="flex-grow: 1;">
+                <form action="/" method="GET" class="search">
+                    <input id="searchInput" name="q" placeholder="Buscar eventos pelo nome..." autocomplete="off" />
+                </form>
+            </div>
+
+            <nav class="header-nav" style="display: flex; gap: 1.5rem; align-items: center; white-space: nowrap;">
+                <a th:if="${session.usuarioLogado instanceof T(io.github.site_de_eventos.sitedeeventos.model.Organizador)}"
+                    href="/eventos/novo" style="color: var(--white); text-decoration: none;">Criar Evento</a>
                 <a th:if="${session.usuarioLogado != null}" href="/meus-eventos"
-                    style="color: var(--white); text-decoration: none;gap: 1rem;">Meus Ingressos</a>
+                    style="color: var(--white); text-decoration: none;">Meus Ingressos</a>
             </nav>
-            <div style="display: flex; align-items: center; gap: 1rem;">
+
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
                 <div th:if="${session.usuarioLogado == null}">
                     <a href="/login" style="color: var(--white); text-decoration: none;">Entrar</a>
                 </div>
-                <div th:if="${session.usuarioLogado != null}" style="display: flex; align-items: center; gap: 1rem;">
-                    <a href="/logout" class="btn-muted" style="text-decoration: none;">Sair</a>
+                <div th:if="${session.usuarioLogado != null}" style="display: flex; align-items: center; gap: 1.5rem;">
+                    <a href="/logout" style="color: var(--white); text-decoration: none;">Sair</a>
                     <div class="profile" th:text="${#strings.substring(session.usuarioLogado.nome, 0, 1)}"></div>
                 </div>
             </div>
@@ -54,14 +64,15 @@
                 </div>
             </div>
             <div class="right" style="min-width:120px;display:flex;align-items:center;justify-content:center">
-                <a href="/mapa" style="color: var(--white); text-decoration: none;"><button id="mapBtn" class="btn-accent">Explorar mapa</button></a>
+                <a href="/mapa" style="color: var(--white); text-decoration: none;"><button id="mapBtn"
+                        class="btn-accent">Explorar mapa</button></a>
             </div>
         </section>
 
         <main>
             <div id="events" class="events">
                 <div class="card" th:each="evento : ${eventos}">
-                    <div class="thumb" 
+                    <div class="thumb"
                         th:style="'background-image: url(' + (${evento.imageUrl != null and not #strings.isEmpty(evento.imageUrl)} ? ${evento.imageUrl} : 'https://source.unsplash.com/random/400x200/?party,concert') + ');'">
                     </div>
                     <div class="body">
@@ -74,12 +85,12 @@
                             <div class="tag" th:text="${evento.categoria}">Categoria</div>
                         </div>
                         <div class="card-actions">
-                            <a th:href="@{/evento/{id}(id=${evento.idEvento})}" class="btn-muted" 
-                            style="text-decoration: none;">Detalhes</a>
+                            <a th:href="@{/evento/{id}(id=${evento.idEvento})}" class="btn-muted"
+                                style="text-decoration: none;">Detalhes</a>
 
                             <div th:if="${evento.ingressosDisponiveis > 0}">
                                 <a th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent"
-                                style="text-decoration: none;">Ingressos</a>
+                                    style="text-decoration: none;">Ingressos</a>
                             </div>
                             <div th:if="${evento.ingressosDisponiveis <= 0}">
                                 <button class="btn-muted" disabled style="cursor: not-allowed;">Esgotado</button>

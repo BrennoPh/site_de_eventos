@@ -36,4 +36,7 @@ public class EventoService {
         }
         return eventoRepository.findById(id);
     }
+    public List<Evento> buscarPorNome(String termo) {
+        return eventoRepository.findByNomeContaining(termo);
+    }
 }
