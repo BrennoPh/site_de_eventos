@@ -27,11 +27,19 @@ public class EventoController {
     @Autowired private EventoService eventoService;
 
     @GetMapping("/")
-    public String index(Model model, HttpSession session) {
+    public String index(Model model, HttpSession session, @RequestParam(name = "q", required = false) String query) {
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
         model.addAttribute("usuarioLogado", usuarioLogado);
         model.addAttribute("nomeUsuario", usuarioLogado != null ? usuarioLogado.getNome() : "visitante");
-        model.addAttribute("eventos", eventoService.buscarTodos());
+
+        List<Evento> eventos;
+        if (query != null && !query.trim().isEmpty()) {
+            eventos = eventoService.buscarPorNome(query);
+        } else {
+            eventos = eventoService.buscarTodos();
+        }
+        model.addAttribute("eventos", eventos);
+
         model.addAttribute("googleMapsApiKey", "SUA_CHAVE_API_AQUI");
         return "index";
     }
