@@ -2,7 +2,7 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Meus Eventos</title>
+    <title>Meus Ingressos</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
@@ -17,9 +17,9 @@
 
         <div class="events" style="margin-top: 2rem;">
             <div class="card" th:each="pedido : ${pedidos}">
-                    <div class="thumb" 
-                        th:style="'background-image: url(' + (${pedido.evento.imageUrl != null and not #strings.isEmpty(pedido.evento.imageUrl)} ? ${pedido.evento.imageUrl} : 'https://source.unsplash.com/random/400x200/?party,concert') + ');'">
-                    </div>
+                <div class="thumb" 
+                     th:style="'background-image: url(' + (${pedido.evento.imageUrl != null and not #strings.isEmpty(pedido.evento.imageUrl)} ? ${pedido.evento.imageUrl} : 'https://source.unsplash.com/random/400x200/?party,concert') + ');'">
+                </div>
                 <div class="body">
                     <h3 th:text="${pedido.evento.nomeEvento}">Nome do Evento</h3>
                     <div class="meta">
@@ -32,7 +32,9 @@
                         <div><strong>Valor Total Pago:</strong> R$ <span th:text="${#numbers.formatDecimal(pedido.valorTotal, 1, 'POINT', 2, 'COMMA')}">0,00</span></div>
                     </div>
 
-                    <div class="card-actions" style="justify-content: flex-start; margin-top: 1rem;">
+                    <div class="card-actions" style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <a th:href="@{/evento/{id}(id=${pedido.evento.idEvento})}" class="btn-muted" 
+                           style="text-decoration: none;">Detalhes</a>
                         <span class="tag" style="background-color: var(--accent);" th:text="${pedido.status}">Confirmado</span>
                     </div>
                 </div>
