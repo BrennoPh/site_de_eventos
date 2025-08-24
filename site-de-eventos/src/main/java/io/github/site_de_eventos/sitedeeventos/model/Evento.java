@@ -17,7 +17,6 @@ public class Evento {
     @Expose
     private String categoria;
     
-    // Não exponha o organizador inteiro para evitar loops. Salvaremos apenas o ID.
     private Organizador organizador;
     
     @Expose
@@ -26,8 +25,11 @@ public class Evento {
     private double preco;
     @Expose
     private LocalDateTime dataEvento;
+    
+    @Expose
+    private String imageUrl;
 
-    public Evento() {} // Modificado para ser public
+    public Evento() {}
 
 	
 	//Getters
@@ -61,8 +63,14 @@ public class Evento {
 	public LocalDateTime getDataEvento() {
 		return dataEvento;
 	}
+	public String getImageUrl() {
+		return imageUrl;
+	}
 
 	//Setters
+	public void setImageUrl(String imageUrl) {
+	        this.imageUrl = imageUrl;
+	}
 	public void setIdEvento(int idEvento) {
 		this.idEvento = idEvento;
 	}

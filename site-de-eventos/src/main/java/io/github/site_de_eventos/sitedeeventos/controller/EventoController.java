@@ -45,24 +45,28 @@ public class EventoController {
         return "redirect:/";
     }
 
-    @PostMapping("/eventos")
-    public String criarEvento(@RequestParam String nomeEvento, @RequestParam LocalDateTime dataEvento, @RequestParam String local,
-                              @RequestParam String descricao, @RequestParam String categoria, @RequestParam double preco,
-                              @RequestParam int capacidade, HttpSession session) { // Recebe a capacidade
-        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
-        if (usuarioLogado instanceof Organizador) {
-            Organizador organizador = (Organizador) usuarioLogado;
-            IEventoBuilder builder = new EventoBuilderConcreto();
-            Evento novoEvento = builder.nomeEvento(nomeEvento).dataEvento(dataEvento).local(local)
-                .descricao(descricao).categoria(categoria).preco(preco)
-                .capacidade(capacidade) // Define a capacidade
-                .ingressosDisponiveis(capacidade) // Define os ingressos iniciais
-                .organizador(organizador).build();
-            eventoService.save(novoEvento);
-            return "redirect:/";
-        }
-        return "redirect:/";
-    }
+
+	@PostMapping("/eventos")
+	public String criarEvento(@RequestParam String nomeEvento, @RequestParam LocalDateTime dataEvento, @RequestParam String local,
+	                          @RequestParam String descricao, @RequestParam String categoria, @RequestParam double preco,
+	                          @RequestParam int capacidade, 
+	                          @RequestParam(required = false) String imageUrl,
+	                          HttpSession session) {
+	    Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+	    if (usuarioLogado instanceof Organizador) {
+	        Organizador organizador = (Organizador) usuarioLogado;
+	        IEventoBuilder builder = new EventoBuilderConcreto();
+	        Evento novoEvento = builder.nomeEvento(nomeEvento).dataEvento(dataEvento).local(local)
+	            .descricao(descricao).categoria(categoria).preco(preco)
+	            .capacidade(capacidade)
+	            .ingressosDisponiveis(capacidade)
+	            .imageUrl(imageUrl) 
+	            .organizador(organizador).build();
+	        eventoService.save(novoEvento);
+	        return "redirect:/";
+	    }
+	    return "redirect:/";
+	}
 
     @GetMapping("/mapa")
     public String exibirMapa(Model model) {

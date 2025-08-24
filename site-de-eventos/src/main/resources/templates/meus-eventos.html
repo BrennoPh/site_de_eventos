@@ -11,15 +11,27 @@
         <h1>Meus Ingressos</h1>
         <p class="muted">Aqui estão os eventos que você já garantiu.</p>
 
+        <div th:if="${sucesso}" class="alert-success" th:text="${sucesso}"
+             style="background-color: #2ecc71; color: white; padding: 1rem; text-align: center; border-radius: 8px; margin: 1rem 0;">
+        </div>
+
         <div class="events" style="margin-top: 2rem;">
-            <div class.card="card" th:each="pedido : ${pedidos}">
-                <div class.thumb="thumb" style="background-image: url('https://source.unsplash.com/random/400x200/?party,concert')"></div>
+            <div class="card" th:each="pedido : ${pedidos}">
+                    <div class="thumb" 
+                        th:style="'background-image: url(' + (${pedido.evento.imageUrl != null and not #strings.isEmpty(pedido.evento.imageUrl)} ? ${pedido.evento.imageUrl} : 'https://source.unsplash.com/random/400x200/?party,concert') + ');'">
+                    </div>
                 <div class="body">
                     <h3 th:text="${pedido.evento.nomeEvento}">Nome do Evento</h3>
                     <div class="meta">
                         <span th:text="'📅 ' + ${#temporals.format(pedido.evento.dataEvento, 'dd MMM, HH:mm')}"></span>
                         <span th:text="'📍 ' + ${pedido.evento.local}"></span>
                     </div>
+                    
+                    <div class="pedido-info" style="margin-top: 1rem; font-size: 0.9rem;">
+                        <div><strong>Ingressos Comprados:</strong> <span th:text="${pedido.quantidadeIngressos}">1</span></div>
+                        <div><strong>Valor Total Pago:</strong> R$ <span th:text="${#numbers.formatDecimal(pedido.valorTotal, 1, 'POINT', 2, 'COMMA')}">0,00</span></div>
+                    </div>
+
                     <div class="card-actions" style="justify-content: flex-start; margin-top: 1rem;">
                         <span class="tag" style="background-color: var(--accent);" th:text="${pedido.status}">Confirmado</span>
                     </div>

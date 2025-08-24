@@ -18,6 +18,7 @@ public interface IEventoBuilder {
 	public IEventoBuilder descricao(String descricao);
 	public IEventoBuilder preco(double preco);
 	public IEventoBuilder dataEvento(LocalDateTime dataEvento);
+	public IEventoBuilder imageUrl(String imageUrl);
 	public Evento build();
 	
 }

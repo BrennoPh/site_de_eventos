@@ -72,6 +72,12 @@ public class EventoBuilderConcreto implements IEventoBuilder{
     }
 
     @Override
+    public IEventoBuilder imageUrl(String imageUrl) {
+        this.evento.setImageUrl(imageUrl);
+        return this;
+    }
+    
+    @Override
     public Evento build() {
         return this.evento;
     }
