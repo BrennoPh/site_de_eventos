@@ -77,8 +77,13 @@
                             <a th:href="@{/evento/{id}(id=${evento.idEvento})}" class="btn-muted" 
                             style="text-decoration: none;">Detalhes</a>
 
-                            <a th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent"
-                            style="text-decoration: none;">Ingressos</a>
+                            <div th:if="${evento.ingressosDisponiveis > 0}">
+                                <a th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent"
+                                style="text-decoration: none;">Ingressos</a>
+                            </div>
+                            <div th:if="${evento.ingressosDisponiveis <= 0}">
+                                <button class="btn-muted" disabled style="cursor: not-allowed;">Esgotado</button>
+                            </div>
                         </div>
                     </div>
                 </div>

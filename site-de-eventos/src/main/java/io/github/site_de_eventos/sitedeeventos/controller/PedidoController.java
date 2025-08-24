@@ -43,7 +43,7 @@ public class PedidoController {
 
     @PostMapping("/pedidos")
     public String processarPedido(@RequestParam int eventoId, @RequestParam int usuarioId, 
-                                  @RequestParam int quantidade, HttpSession session,
+                                  @RequestParam int quantidade, @RequestParam(required = false) String cupomCode,HttpSession session,
                                   RedirectAttributes redirectAttributes) { // <-- Adicione RedirectAttributes
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
 
@@ -54,7 +54,7 @@ public class PedidoController {
         if (usuarioLogado.getIdUsuario() == usuarioId) {
             try {
                 // Tenta criar o pedido
-                pedidoService.criarPedido(usuarioId, eventoId, quantidade, "");
+                pedidoService.criarPedido(usuarioId, eventoId, quantidade, cupomCode);
                 
                 // Atualiza o usuário na sessão para refletir o novo pedido
                 session.setAttribute("usuarioLogado", usuarioLogado);

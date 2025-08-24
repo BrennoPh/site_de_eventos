@@ -19,6 +19,8 @@ public interface IEventoBuilder {
 	public IEventoBuilder preco(double preco);
 	public IEventoBuilder dataEvento(LocalDateTime dataEvento);
 	public IEventoBuilder imageUrl(String imageUrl);
+    public IEventoBuilder cupomCode(String cupomCode);
+    public IEventoBuilder cupomDiscountValue(double cupomDiscountValue);
 	public Evento build();
 	
 }

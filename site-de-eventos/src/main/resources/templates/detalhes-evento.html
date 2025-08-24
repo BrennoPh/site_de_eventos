@@ -42,8 +42,14 @@
                  style="white-space: pre-wrap; font-family: 'Montserrat', sans-serif;"></pre>
 
             <div class="card-actions" style="margin-top: 2rem;">
-                 <a th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent"
+                <div th:if="${evento.ingressosDisponiveis > 0}">
+                    <a th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent"
                     style="text-decoration: none; width: 100%; text-align: center;">Comprar Ingresso</a>
+                </div>
+                <div th:if="${evento.ingressosDisponiveis <= 0}">
+                    <button class="btn-muted" disabled 
+                            style="cursor: not-allowed; width: 100%; text-align: center;">Ingressos Esgotados</button>
+                </div>
             </div>
         </div>
 

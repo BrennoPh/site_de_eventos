@@ -28,6 +28,11 @@ public class Evento {
     
     @Expose
     private String imageUrl;
+    
+    @Expose
+    private String cupomCode;
+    @Expose
+    private double cupomDiscountValue;
 
     public Evento() {}
 
@@ -66,8 +71,29 @@ public class Evento {
 	public String getImageUrl() {
 		return imageUrl;
 	}
+	
+	
+
+	public String getCupomCode() {
+		return cupomCode;
+	}
+
+
+	public double getCupomDiscountValue() {
+		return cupomDiscountValue;
+	}
+
 
 	//Setters
+
+	public void setCupomCode(String cupomCode) {
+		this.cupomCode = cupomCode;
+	}
+
+
+	public void setCupomDiscountValue(double cupomDiscountValue) {
+		this.cupomDiscountValue = cupomDiscountValue;
+	}
 	public void setImageUrl(String imageUrl) {
 	        this.imageUrl = imageUrl;
 	}

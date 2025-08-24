@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class Ingresso {
     @Expose
-    private int idInscricao;
+    private String idInscricao;
     @Expose
     private int idEvento;
     @Expose
@@ -17,7 +17,7 @@ public class Ingresso {
     @Expose
     private double precoIngresso;
 
-    public Ingresso(int idInscricao, int idEvento, String nomeParticipante, String emailParticipante, LocalDateTime dataCompra, double precoIngresso) {
+    public Ingresso(String idInscricao, int idEvento, String nomeParticipante, String emailParticipante, LocalDateTime dataCompra, double precoIngresso) {
         this.idInscricao = idInscricao;
         this.idEvento = idEvento;
         this.nomeParticipante = nomeParticipante;
@@ -26,7 +26,7 @@ public class Ingresso {
         this.precoIngresso = precoIngresso;
     }
 
-	public int getIdIncricao() {
+	public String getIdIncricao() {
 		return idInscricao;
 	}
 
@@ -50,7 +50,7 @@ public class Ingresso {
 		return precoIngresso;
 	}
 
-	public void setIdIncricao(int idInscricao) {
+	public void setIdIncricao(String idInscricao) {
 		this.idInscricao = idInscricao;
 	}
 

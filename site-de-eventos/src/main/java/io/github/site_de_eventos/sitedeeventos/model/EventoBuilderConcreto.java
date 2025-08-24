@@ -78,6 +78,18 @@ public class EventoBuilderConcreto implements IEventoBuilder{
     }
     
     @Override
+    public IEventoBuilder cupomCode(String cupomCode) {
+        this.evento.setCupomCode(cupomCode);
+        return this;
+    }
+
+    @Override
+    public IEventoBuilder cupomDiscountValue(double cupomDiscountValue) {
+        this.evento.setCupomDiscountValue(cupomDiscountValue);
+        return this;
+    }
+    
+    @Override
     public Evento build() {
         return this.evento;
     }

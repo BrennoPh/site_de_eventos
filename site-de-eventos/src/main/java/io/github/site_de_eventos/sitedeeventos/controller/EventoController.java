@@ -51,6 +51,8 @@ public class EventoController {
 	                          @RequestParam String descricao, @RequestParam String categoria, @RequestParam double preco,
 	                          @RequestParam int capacidade, 
 	                          @RequestParam(required = false) String imageUrl,
+	                          @RequestParam(required = false) String cupomCode,
+	                          @RequestParam(defaultValue = "0.0") double cupomDiscountValue,
 	                          HttpSession session) {
 	    Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
 	    if (usuarioLogado instanceof Organizador) {
@@ -61,7 +63,10 @@ public class EventoController {
 	            .capacidade(capacidade)
 	            .ingressosDisponiveis(capacidade)
 	            .imageUrl(imageUrl) 
-	            .organizador(organizador).build();
+	            .cupomCode(cupomCode)
+	            .cupomDiscountValue(cupomDiscountValue)
+	            .organizador(organizador)
+	            .build();
 	        eventoService.save(novoEvento);
 	        return "redirect:/";
 	    }
