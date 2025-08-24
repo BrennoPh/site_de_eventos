@@ -1,21 +1,10 @@
 package io.github.site_de_eventos.sitedeeventos.repository.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.github.site_de_eventos.sitedeeventos.model.Organizador;
-import io.github.site_de_eventos.sitedeeventos.model.Usuario;
-import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
-import jakarta.annotation.PostConstruct;
-import org.springframework.stereotype.Repository;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -25,6 +14,28 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.springframework.stereotype.Repository;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.TypeAdapter;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+
+import io.github.site_de_eventos.sitedeeventos.model.OrganizadorBuilderConcreto;
+import io.github.site_de_eventos.sitedeeventos.model.Usuario;
+import io.github.site_de_eventos.sitedeeventos.model.UsuarioBuilderConcreto;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IOrganizadorBuilder;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IUsuarioBuilder;
+import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
+import jakarta.annotation.PostConstruct;
 
 @Repository
 public class UsuarioRepositoryImpl implements UsuarioRepository {
@@ -54,6 +65,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     	        return LocalDateTime.parse(in.nextString());
     	    }
     	})
+        .registerTypeAdapter(Usuario.class, new UsuarioTypeAdapter())
         .setPrettyPrinting()
         .create();
 
@@ -125,6 +137,31 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
             }
         } catch (IOException e) {
             System.err.println("Erro ao carregar dados de usuários: " + e.getMessage());
+        }
+    }
+}
+
+class UsuarioTypeAdapter implements JsonDeserializer<Usuario> {
+    @Override
+    public Usuario deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        JsonObject jsonObject = json.getAsJsonObject();
+
+        if (jsonObject.has("cnpj")) {
+            // Usa o OrganizadorBuilder para criar o objeto
+            IOrganizadorBuilder builder = new OrganizadorBuilderConcreto();
+            ((OrganizadorBuilderConcreto)builder.idUsuario(jsonObject.get("idUsuario").getAsInt())
+                   .nome(jsonObject.has("nome") ? jsonObject.get("nome").getAsString() : null)
+                   .email(jsonObject.has("email") ? jsonObject.get("email").getAsString() : null))
+                   .cnpj(jsonObject.has("cnpj") ? jsonObject.get("cnpj").getAsString() : null)
+                   .contaBancaria(jsonObject.has("contaBancaria") ? jsonObject.get("contaBancaria").getAsString() : null);
+            return builder.build();
+        } else {
+            // Usa o UsuarioBuilder para criar o objeto
+            IUsuarioBuilder builder = new UsuarioBuilderConcreto();
+            builder.idUsuario(jsonObject.get("idUsuario").getAsInt())
+                   .nome(jsonObject.has("nome") ? jsonObject.get("nome").getAsString() : null)
+                   .email(jsonObject.has("email") ? jsonObject.get("email").getAsString() : null);
+            return builder.build();
         }
     }
 }
