@@ -18,23 +18,29 @@
                 <span th:text="${evento.local}">Local</span>
             </p>
         </div>
-        <div class="resumo-pedido">
-            <h3>Resumo do Pedido</h3>
-            
-            <p>Ingresso: 1 x Evento "<span th:text="${evento.nomeEvento}">Nome do Evento</span>"</p>
-            
-            <p class="big" style="text-align: center; margin: 2rem 0;">Total: R$ 50,00</p>
-        </div>
+<div class="resumo-pedido">
+    <h3>Seu Pedido</h3>
+    
+    <p>Evento: "<span th:text="${evento.nomeEvento}">Nome do Evento</span>"</p>
+    
+    <p class="big" style="text-align: center; margin: 1rem 0;">
+        Preço por Ingresso: R$ <span th:text="${#numbers.formatDecimal(evento.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
+    </p>
 
-        <form action="/pedidos" method="POST">
-            <input type="hidden" name="eventoId" th:value="${evento.idEvento}" />
-            
-            <input type="hidden" name="usuarioId" th:if="${session.usuarioLogado != null}" th:value="${session.usuarioLogado.idUsuario}" />
-            
-            <input type="hidden" name="quantidade" value="1" />
-            
-            <button type="submit" class="btn-accent" style="width:100%;">Confirmar Compra</button>
-        </form>
-    </div>
+    <form action="/pedidos" method="POST" style="margin-top: 2rem;">
+        <input type="hidden" name="eventoId" th:value="${evento.idEvento}" />
+        <input type="hidden" name="usuarioId" th:if="${session.usuarioLogado != null}" th:value="${session.usuarioLogado.idUsuario}" />
+        
+        <div class="form-group">
+            <label for="quantidade">Quantidade de Ingressos</label>
+            <input type="number" id="quantidade" name="quantidade" value="1" min="1" 
+                   th:max="${evento.ingressosDisponiveis}" required 
+                   style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1a1a1a; border: 1px solid var(--border); color: var(--white); font-size: 1rem;">
+            <small th:text="'(Máximo de ' + ${evento.ingressosDisponiveis} + ' disponíveis)'" style="display: block; text-align: right; margin-top: 0.5rem;"></small>
+        </div>
+        
+        <button type="submit" class="btn-accent" style="width:100%; margin-top: 2rem;">Confirmar Compra</button>
+    </form>
+</div>
 </body>
 </html>

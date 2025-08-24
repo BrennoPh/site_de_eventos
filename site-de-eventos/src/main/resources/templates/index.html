@@ -74,9 +74,11 @@
                             <div class="tag" th:text="${evento.categoria}">Categoria</div>
                         </div>
                         <div class="card-actions">
-                            <button class="btn-muted">Detalhes</button>
+                            <a th:href="@{/evento/{id}(id=${evento.idEvento})}" class="btn-muted" 
+                            style="text-decoration: none;">Detalhes</a>
+
                             <a th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent"
-                                style="text-decoration: none;">Ingressos</a>
+                            style="text-decoration: none;">Ingressos</a>
                         </div>
                     </div>
                 </div>

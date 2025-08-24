@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class EventoController {
@@ -79,6 +81,17 @@ public class EventoController {
         }
 
         return "meus-eventos";
+    }
+    
+    @GetMapping("/evento/{id}")
+    public String exibirDetalhesEvento(@PathVariable("id") int id, Model model) {
+        Optional<Evento> eventoOpt = eventoService.buscarPorId(id);
+        if (eventoOpt.isPresent()) {
+            model.addAttribute("evento", eventoOpt.get());
+        } else {
+            model.addAttribute("evento", null); // Garante que o objeto seja nulo se não encontrado
+        }
+        return "detalhes-evento"; // Renderiza a nova página que criamos
     }
 
     @GetMapping("/api/eventos")

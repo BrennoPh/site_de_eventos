@@ -1,0 +1,13 @@
+[
+  {
+    "idEvento": 1,
+    "capacidade": 5,
+    "ingressosDisponiveis": 0,
+    "nomeEvento": "teste",
+    "local": "TesteLocal",
+    "categoria": "teste",
+    "descrição": "TESTE",
+    "preco": 100.0,
+    "dataEvento": "2025-09-12T12:00"
+  }
+]

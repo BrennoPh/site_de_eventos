@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes do Evento</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .detalhe-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .detalhe-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="detalhe-container">
+        <a href="/" style="text-decoration: none; color: var(--muted); margin-bottom: 2rem; display: inline-block;">&larr; Voltar para o início</a>
+
+        <div th:if="${evento}">
+            <img src="https://source.unsplash.com/random/800x400/?party,concert,show" alt="Imagem do Evento">
+            
+            <h1 th:text="${evento.nomeEvento}">Nome do Evento</h1>
+            
+            <p class="meta-info">
+                <span th:text="'📅 ' + ${#temporals.format(evento.dataEvento, 'dd MMMM yyyy, HH:mm')}">Data</span> |
+                <span th:text="'📍 ' + ${evento.local}">Local</span>
+            </p>
+
+            <hr style="border-color: var(--border); margin: 2rem 0;">
+
+            <h3>Sobre o Evento</h3>
+            <pre th:text="${evento.descrição != null and not #strings.isEmpty(evento.descrição) ? evento.descrição : 'Nenhuma descrição detalhada fornecida.'}" 
+                 style="white-space: pre-wrap; font-family: 'Montserrat', sans-serif;"></pre>
+
+            <div class="card-actions" style="margin-top: 2rem;">
+                 <a th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent"
+                    style="text-decoration: none; width: 100%; text-align: center;">Comprar Ingresso</a>
+            </div>
+        </div>
+
+        <div th:if="${evento == null}">
+            <h1>Evento não encontrado</h1>
+            <p>O evento que você está procurando não existe ou foi removido.</p>
+        </div>
+    </div>
+</body>
+</html>

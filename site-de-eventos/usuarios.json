@@ -1,0 +1,94 @@
+[
+  {
+    "idUsuario": 1,
+    "nome": "admin",
+    "email": "adm@gmail.com",
+    "telefone": "",
+    "cidade": "",
+    "endereco": "",
+    "pedidos": [
+      {
+        "idPedido": 0,
+        "evento": {
+          "idEvento": 1,
+          "capacidade": 5,
+          "ingressosDisponiveis": 4,
+          "nomeEvento": "teste",
+          "local": "TesteLocal",
+          "categoria": "teste",
+          "descrição": "TESTE",
+          "preco": 100.0,
+          "dataEvento": "2025-09-12T12:00"
+        },
+        "quantidadeIngressos": 1,
+        "valorBase": 100.0,
+        "valorTotal": 100.0,
+        "dataPedido": "2025-08-23T20:42:42.366908977",
+        "status": "CONCLUIDO",
+        "ingressos": [
+          {
+            "idInscricao": 0,
+            "idEvento": 1,
+            "nomeParticipante": "admin",
+            "emailParticipante": "adm@gmail.com",
+            "dataCompra": "2025-08-23T20:42:42.379757840",
+            "precoIngresso": 100.0
+          }
+        ]
+      },
+      {
+        "idPedido": 0,
+        "evento": {
+          "idEvento": 1,
+          "capacidade": 5,
+          "ingressosDisponiveis": 0,
+          "nomeEvento": "teste",
+          "local": "TesteLocal",
+          "categoria": "teste",
+          "descrição": "TESTE",
+          "preco": 100.0,
+          "dataEvento": "2025-09-12T12:00"
+        },
+        "quantidadeIngressos": 4,
+        "valorBase": 400.0,
+        "valorTotal": 400.0,
+        "dataPedido": "2025-08-23T20:59:29.508784471",
+        "status": "CONCLUIDO",
+        "ingressos": [
+          {
+            "idInscricao": 0,
+            "idEvento": 1,
+            "nomeParticipante": "admin",
+            "emailParticipante": "adm@gmail.com",
+            "dataCompra": "2025-08-23T20:59:29.517707188",
+            "precoIngresso": 100.0
+          },
+          {
+            "idInscricao": 0,
+            "idEvento": 1,
+            "nomeParticipante": "admin",
+            "emailParticipante": "adm@gmail.com",
+            "dataCompra": "2025-08-23T20:59:29.517746600",
+            "precoIngresso": 100.0
+          },
+          {
+            "idInscricao": 0,
+            "idEvento": 1,
+            "nomeParticipante": "admin",
+            "emailParticipante": "adm@gmail.com",
+            "dataCompra": "2025-08-23T20:59:29.517758720",
+            "precoIngresso": 100.0
+          },
+          {
+            "idInscricao": 0,
+            "idEvento": 1,
+            "nomeParticipante": "admin",
+            "emailParticipante": "adm@gmail.com",
+            "dataCompra": "2025-08-23T20:59:29.517764663",
+            "precoIngresso": 100.0
+          }
+        ]
+      }
+    ]
+  }
+]
