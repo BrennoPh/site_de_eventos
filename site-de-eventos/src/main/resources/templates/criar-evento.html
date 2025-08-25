@@ -10,7 +10,8 @@
 <body>
     <div class="form-page-container">
         <h1>Cadastrar Novo Evento</h1>
-
+            <div th:if="${erro}" style="color: #e74c3c; text-align: center; margin-bottom: 1rem;" th:text="${erro}"></div>
+            <div th:if="${sucesso}" style="color: #2ecc71; text-align: center; margin-bottom: 1rem;" th:text="${sucesso}"></div>
         <form action="/eventos" method="POST">
             <div class="form-group">
                 <label for="nomeEvento">Nome do Evento</label>
