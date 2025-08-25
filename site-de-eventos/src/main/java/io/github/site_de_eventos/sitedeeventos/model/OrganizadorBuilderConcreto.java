@@ -1,7 +1,10 @@
 package io.github.site_de_eventos.sitedeeventos.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import io.github.site_de_eventos.sitedeeventos.model.builder.IOrganizadorBuilder;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IUsuarioBuilder;
+
 
 /**
  * Implementação do padrão de projeto Builder para a classe {@link Organizador}.
@@ -145,7 +148,11 @@ public class OrganizadorBuilderConcreto extends UsuarioBuilderConcreto implement
         this.organizador.setEventoOrganizado(eventoOrganizado);
         return this;
     }
-
+     @Override	
+	public IUsuarioBuilder pegaPedidos(List<Pedido> pedidos){
+    	this.organizador.setPedidos(pedidos);
+    	return this;
+	}
     /**
      * Constrói e retorna o objeto {@link Organizador} final.
      * @return O objeto {@link Organizador} configurado.
