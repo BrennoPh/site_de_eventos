@@ -218,7 +218,8 @@ public class Usuario {
 	public void adicionarPedido(Pedido pedido) {
         this.pedidos.add(pedido);
     }
-	
-	
+	public void setPedidos(List<Pedido> pedidos) {
+    this.pedidos = pedidos;
+}
 
 }
