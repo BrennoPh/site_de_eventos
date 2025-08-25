@@ -98,9 +98,16 @@ public class Evento {
     @Expose
     private double cupomDiscountValue;
     
+    /**
+     * Status atual do evento (ex: "ATIVO", "CANCELADO").
+     */
     @Expose
     private String status; 
     
+    /**
+     * ID do organizador, armazenado para checagens de permissão rápidas sem
+     * a necessidade de carregar o objeto Organizador completo.
+     */
     @Expose 
     private int organizadorId;
 
@@ -217,10 +224,18 @@ public class Evento {
 		return cupomDiscountValue;
 	}
 
+    /**
+     * Obtém o status atual do evento.
+     * @return O status (String) do evento.
+     */
     public String getStatus() {
         return status;
     }
     
+    /**
+     * Obtém o ID do organizador do evento.
+     * @return O ID (inteiro) do organizador.
+     */
     public int getOrganizadorId() {
         return organizadorId;
     }
@@ -228,11 +243,21 @@ public class Evento {
     
 	//Setters	
 
+    /**
+     * Define o ID do organizador do evento.
+     * @param organizadorId (int) O novo ID do organizador.
+     */
     public void setOrganizadorId(int organizadorId) {
+        // Atribui o ID do organizador fornecido ao campo correspondente.
         this.organizadorId = organizadorId;
     }
 
+    /**
+     * Define o status do evento.
+     * @param status (String) O novo status (ex: "ATIVO", "CANCELADO").
+     */
     public void setStatus(String status) {
+        // Atribui o status fornecido ao campo 'status' do objeto.
         this.status = status;
     }	
 

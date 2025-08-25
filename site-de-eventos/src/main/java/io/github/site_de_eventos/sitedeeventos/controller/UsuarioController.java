@@ -17,8 +17,7 @@ import io.github.site_de_eventos.sitedeeventos.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * Controlador responsável por gerenciar o ciclo de vida do usuário.
- * ... (Javadoc completo omitido para brevidade) ...
+ * Controlador responsável por gerenciar o ciclo de vida do usuário (cadastro, login, logout).
  */
 @Controller
 public class UsuarioController {
@@ -55,7 +54,7 @@ public class UsuarioController {
             // Converte LocalDate (só data, vindo do form) para LocalDateTime (data e hora), que é o tipo no modelo.
             LocalDateTime dataNascimentoTime = (dataNascimento != null) ? dataNascimento.atStartOfDay() : null;
 
-            // Chama o serviço para registrar o usuário, passando todos os dados. O serviço lida com a lógica de ser organizador ou não.
+            // Chama o serviço para registrar o usuário, agora incluindo a senha.
             usuarioService.registrar(nome, email, senha , cpf, telefone, dataNascimentoTime, cidade, endereco, isOrganizador, cnpj, contaBancaria);
             
             // Se o registro for bem-sucedido, adiciona uma mensagem de sucesso ao 'Model'.
@@ -80,33 +79,33 @@ public class UsuarioController {
     }
 
     /**
-     * Processa a submissão do formulário de login.
+     * Processa a submissão do formulário de login, validando e-mail e senha.
      */
     @PostMapping("/login")
     public String processarLogin(@RequestParam String email,@RequestParam String senha, HttpSession session, Model model) {
-    	// Chama o serviço para autenticar o usuário pelo e-mail.
+    	// Chama o serviço para autenticar o usuário apenas pelo e-mail primeiro.
     	Optional<Usuario> usuarioOpt = usuarioService.autenticar(email);
-    	// Verifica se o usuário foi encontrado no banco de dados.
+    	// Verifica se um usuário com este e-mail foi encontrado no banco de dados.
     	if (usuarioOpt.isPresent()) {
+            // Se o usuário existe, pega o objeto.
             Usuario usuario = usuarioOpt.get();
-            //Verifica se a senha é igual a do usuario
+            // Agora, compara a senha enviada no formulário com a senha armazenada no banco.
             if(usuario.getSenha().equals(senha)){
-    		// Se sim, armazena o objeto completo do usuário na sessão HTTP.
-            // É isso que "mantém o usuário logado" durante a navegação.
-    		session.setAttribute("usuarioLogado", usuario);
-    		// Redireciona para a página principal.
-    		return "redirect:/";
-            }else{
-                // Se a não a senha é incompativel, adiciona uma mensagem de erro ao 'Model'.
-        	model.addAttribute("erro", "Email ou Senha incorretos");
-        	// E renderiza a página de login novamente para o usuário tentar de novo.
-        	return "login";
-
+    		    // Se as senhas baterem, armazena o objeto completo do usuário na sessão HTTP.
+                // É isso que "mantém o usuário logado" durante a navegação.
+    		    session.setAttribute("usuarioLogado", usuario);
+    		    // Redireciona para a página principal.
+    		    return "redirect:/";
+            } else {
+                // Se a senha estiver incorreta, adiciona uma mensagem de erro ao 'Model'.
+        	    model.addAttribute("erro", "Email ou Senha incorretos");
+        	    // E renderiza a página de login novamente para o usuário tentar de novo.
+        	    return "login";
             }
         } else {
-            // Se o e-mail não foi encontrado, adiciona uma mensagem de erro ao 'Model'.
+            // Se o e-mail não for encontrado, adiciona uma mensagem de erro ao 'Model'.
         	model.addAttribute("erro", "Email não encontrado. Verifique os dados ou cadastre-se.");
-        	// E renderiza a página de login novamente para o usuário tentar de novo.
+        	// E renderiza a página de login novamente.
         	return "login";
         }
     }

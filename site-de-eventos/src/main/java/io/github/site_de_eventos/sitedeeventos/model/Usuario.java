@@ -232,19 +232,36 @@ public class Usuario {
 		this.dataNascimento = dataNascimento;
 	}
 	
+    /**
+     * Adiciona um novo pedido à lista de pedidos do usuário.
+     * @param pedido (Pedido) O pedido a ser adicionado.
+     */
     public void adicionarPedido(Pedido pedido) {
+        // Medida de segurança: garante que a lista de pedidos seja inicializada caso seja nula.
         if (this.pedidos == null) {
             this.pedidos = new ArrayList<>();
         }
+        // Adiciona o novo pedido à lista existente.
         this.pedidos.add(pedido);
     }
     
+    /**
+     * Remove um pedido da lista de pedidos do usuário com base no ID do pedido.
+     * @param pedidoId (int) O ID do pedido a ser removido.
+     */
     public void removerPedido(int pedidoId) {
+        // Verifica se a lista de pedidos existe para evitar NullPointerException.
         if (this.pedidos != null) {
+            // Utiliza o método 'removeIf' com uma expressão lambda para remover o pedido
+            // cujo ID corresponda ao 'pedidoId' fornecido.
             this.pedidos.removeIf(p -> p.getIdPedido() == pedidoId);
         }
     }
 
+    /**
+     * Define (substitui) a lista de pedidos do usuário.
+     * @param pedidos (List<Pedido>) A nova lista de pedidos.
+     */
 	public void setPedidos(List<Pedido> pedidos) {
         this.pedidos = pedidos;
     }

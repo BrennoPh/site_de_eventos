@@ -113,6 +113,11 @@ public interface IEventoBuilder {
      * @return O objeto {@link Evento} construído.
      */
     
+    /**
+     * Define o ID do organizador responsável pelo evento.
+     * @param organizadorId (int) O ID do organizador a ser definido.
+     * @return A própria instância do builder para chamadas encadeadas.
+     */
     public IEventoBuilder organizadorId(int organizadorId);
     public Evento build();
 }

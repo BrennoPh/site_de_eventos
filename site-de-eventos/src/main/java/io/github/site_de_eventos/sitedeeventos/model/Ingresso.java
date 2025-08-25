@@ -47,6 +47,10 @@ public class Ingresso {
     @Expose
     private double precoIngresso;
     
+    /**
+     * Referência de volta para o Pedido ao qual este ingresso pertence.
+     * Ajuda a navegar da entidade filha (Ingresso) para a entidade pai (Pedido).
+     */
     private Pedido pedido;
 
     /**
@@ -115,14 +119,23 @@ public class Ingresso {
         return precoIngresso;
     }
     
+    /**
+     * Obtém o objeto Pedido ao qual este ingresso está associado.
+     * @return O objeto (Pedido) pai.
+     */
     public Pedido getPedido() {
         return pedido;
     }
+    
+    // --- Setters ---
 
+    /**
+     * Define o objeto Pedido pai para este ingresso.
+     * @param pedido (Pedido) O objeto Pedido a ser associado.
+     */
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
     }
-    
 
     /**
      * Define o ID da inscrição.

@@ -88,7 +88,12 @@ public interface IUsuarioBuilder {
      * @return A própria instância do builder para chamadas encadeadas.
      */
     public IUsuarioBuilder pedidos(Pedido pedidos);
-
+    /**
+     * Define a lista completa de pedidos para o usuário.
+     * Útil para carregar um usuário já existente com todos os seus pedidos.
+     * @param pedidos (List<Pedido>) A lista de pedidos a ser definida.
+     * @return A própria instância do builder para chamadas encadeadas.
+     */
     public IUsuarioBuilder pegaPedidos(List<Pedido> pedidos);
     /**
      * Finaliza a construção e retorna o objeto {@link Usuario} completo.

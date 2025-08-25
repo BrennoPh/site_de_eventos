@@ -168,22 +168,32 @@ public class EventoBuilderConcreto implements IEventoBuilder {
         return this;
     }
     
+    /**
+     * Define o ID do organizador do evento.
+     * @param organizadorId (int) O ID do organizador a ser definido.
+     * @return A própria instância do builder para chamadas encadeadas.
+     */
     @Override
     public IEventoBuilder organizadorId(int organizadorId) {
+        // Chama o setter correspondente no objeto Evento que está sendo construído.
         this.evento.setOrganizadorId(organizadorId);
+        // Retorna a si mesmo para permitir o encadeamento.
         return this;
     }
 
     /**
      * Constrói e retorna o objeto {@link Evento} final.
+     * Garante que o evento tenha um status padrão "ATIVO" se nenhum for especificado.
      * @return O objeto {@link Evento} configurado.
      */
     @Override
     public Evento build() {
-        //Define um status padrão (ATIVO) para o evento
+        // Regra de negócio: Define um status padrão para o evento caso nenhum tenha sido definido durante a construção.
         if (this.evento.getStatus() == null || this.evento.getStatus().isEmpty()) {
+            // Define o status padrão como "ATIVO".
             this.evento.setStatus("ATIVO");
         }
+        // Retorna a instância do evento completamente configurada.
         return this.evento;
     }
 }

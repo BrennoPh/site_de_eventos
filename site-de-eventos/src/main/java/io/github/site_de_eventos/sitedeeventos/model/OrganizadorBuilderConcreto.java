@@ -159,9 +159,16 @@ public class OrganizadorBuilderConcreto extends UsuarioBuilderConcreto implement
         this.organizador.setEventoOrganizado(eventoOrganizado);
         return this;
     }
+    /**
+     * Define a lista completa de pedidos para o organizador.
+     * @param pedidos (List<Pedido>) A lista de pedidos a ser definida.
+     * @return A própria instância do builder para chamadas encadeadas.
+     */
      @Override	
 	public IUsuarioBuilder pegaPedidos(List<Pedido> pedidos){
+    	// Chama o setter que substitui a lista de pedidos do organizador.
     	this.organizador.setPedidos(pedidos);
+    	// Retorna a si mesmo.
     	return this;
 	}
     /**
