@@ -209,7 +209,6 @@ public class EventoController {
         // Busca o evento pelo ID; o retorno é um Optional para evitar NullPointerException.
         Optional<Evento> eventoOpt = eventoService.buscarPorId(id);
         // Verifica se o Optional contém um objeto Evento.
-    	Optional<Evento> eventoOpt = eventoService.buscarPorId(id);
         if (eventoOpt.isPresent()) {
         	// Se o evento foi encontrado, adiciona-o ao 'Model'.
         	model.addAttribute("evento", eventoOpt.get());
