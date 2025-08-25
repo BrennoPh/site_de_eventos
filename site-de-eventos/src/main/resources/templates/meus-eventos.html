@@ -41,22 +41,27 @@
                     </div>
                 </div>
 
-                <div class="card-actions" style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
-                    <a th:href="@{/evento/{id}(id=${pedido.evento.idEvento})}" class="btn-muted" 
-                    style="text-decoration: none;">Detalhes</a>
-                    
+                <div class="card-actions" style="margin-top: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <a th:href="@{/evento/{id}(id=${pedido.evento.idEvento})}" class="btn btn-neutral">Detalhes</a>
+
+                    <a th:if="${pedido.status == 'CONCLUIDO'}"
+                    th:href="@{/pedidos/{pedidoId}/ingresso(pedidoId=${pedido.idPedido})}"
+                    target="_blank" class="btn btn-primary">Imprimir</a>
+
                     <form th:if="${pedido.status == 'CONCLUIDO'}" th:action="@{/pedidos/{pedidoId}/cancelar(pedidoId=${pedido.idPedido})}" method="POST" style="margin: 0;">
-                        <button type="submit" class="btn-danger" style="border: 1px solid #e74c3c; background: transparent; color: #e74c3c; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;"
+                        <button type="submit" class="btn btn-danger"
                                 onclick="return confirm('Tem certeza que deseja desistir desta compra?');">
                             Desistir
                         </button>
                     </form>
                     
-                    <th:block th:switch="${pedido.status}">
-                        <span th:case="'CONCLUIDO'" class="tag" style="background-color: var(--accent);">Confirmado</span>
-                        <span th:case="'CANCELADO_PELO_USUARIO'" class="tag" style="background-color: #e67e22;">Desistido</span>
-                        <span th:case="'CANCELADO_PELO_ORGANIZADOR'" class="tag" style="background-color: #e74c3c;">Cancelado</span>
-                    </th:block>
+                    <div style="flex-grow: 1; text-align: right;">
+                        <th:block th:switch="${pedido.status}">
+                            <span th:case="'CONCLUIDO'" class="tag" style="background-color: var(--accent);">Confirmado</span>
+                            <span th:case="'CANCELADO_PELO_USUARIO'" class="tag" style="background-color: #e67e22;">Desistido</span>
+                            <span th:case="'CANCELADO_PELO_ORGANIZADOR'" class="tag" style="background-color: #e74c3c;">Cancelado</span>
+                        </th:block>
+                    </div>
                 </div>
             </div>
         </div>

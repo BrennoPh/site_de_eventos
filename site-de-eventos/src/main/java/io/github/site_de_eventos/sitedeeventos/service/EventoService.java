@@ -17,13 +17,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class EventoService {
+public class CEventoService {
 
     private final EventoRepository eventoRepository;
     private final UsuarioRepository usuarioRepository;
 
     @Autowired
-    public EventoService(EventoRepository eventoRepository, UsuarioRepository usuarioRepository) {
+    public CEventoService(EventoRepository eventoRepository, UsuarioRepository usuarioRepository) {
         this.eventoRepository = eventoRepository;
         this.usuarioRepository = usuarioRepository;
     }

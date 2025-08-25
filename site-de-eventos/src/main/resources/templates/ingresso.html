@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Ingresso - ' + ${evento.nomeEvento}">Ingresso</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+
+        @media print {
+            body { -webkit-print-color-adjust: exact; background: #fff; padding: 0; margin: 0; }
+            .ticket-container { box-shadow: none; margin: 0; border: 2px solid #ccc; }
+            .no-print { display: none !important; }
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: #fff;
+            margin: 0;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 999;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .back-button:hover {
+            background-color: #444;
+            border-color: #777;
+        }
+
+        .ticket-container {
+            width: 900px;
+            background: #1e1e1e;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            display: flex;
+        }
+
+        .ticket-main { padding: 40px; flex-grow: 1; }
+        .ticket-stub { background-color: #9370DB; width: 280px; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; border-left: 3px dashed #121212; text-align: center; color: #1e1e1e; }
+        .header { margin-bottom: 30px; }
+        .header .event-title { font-size: 2.8em; font-weight: 800; margin: 0; line-height: 1.2; color: #9370DB; }
+        .details h3 { font-size: 1.5em; font-weight: 600; border-bottom: 2px solid #9370DB; padding-bottom: 10px; margin-bottom: 20px; }
+        .details p { font-size: 1.1em; margin: 12px 0; line-height: 1.6; color: #ccc; }
+        .details strong { font-weight: 600; color: #fff; display: inline-block; min-width: 130px; }
+        .stub-logo { width: 120px; }
+        .stub-info h4 { margin: 0; font-size: 1.1em; font-weight: 800; text-transform: uppercase; }
+        .stub-info p { margin: 5px 0 0 0; font-size: 1em; }
+        .qr-code img { background: white; padding: 10px; border-radius: 8px; margin-top: 20px; }
+
+    </style>
+</head>
+<body>
+
+    <button onclick="window.location.href='/meus-eventos'" class="back-button no-print">
+        &larr; Voltar para Meus Ingressos
+    </button>
+
+    <div class="ticket-container">
+        <div class="ticket-main">
+            <div class="header">
+                <h1 class="event-title" th:text="${evento.nomeEvento}">Nome do Evento</h1>
+            </div>
+            <div class="details">
+                <h3>Detalhes da Compra</h3>
+                <p><strong>Comprador:</strong> <span th:text="${usuario.nome}"></span></p>
+                <p><strong>Data:</strong> <span th:text="${#temporals.format(evento.dataEvento, 'dd/MM/yyyy, HH:mm')} + 'h'"></span></p>
+                <p><strong>Local:</strong> <span th:text="${evento.local}"></span></p>
+                <p><strong>Pedido:</strong> <span th:text="'#' + ${pedido.idPedido}"></span></p>
+                <p><strong>Ingressos:</strong> <span th:text="${pedido.quantidadeIngressos}"></span></p>
+            </div>
+        </div>
+        <div class="ticket-stub">
+            <img class="stub-logo" th:src="@{/images/logo.png}" alt="Logo">
+            <div class="stub-info">
+                <h4><span th:text="${evento.nomeEvento}"></span></h4>
+                <p><span th:text="${#temporals.format(evento.dataEvento, 'dd MMM yyyy')}"></span></p>
+                <p><span th:text="${usuario.nome}"></span></p>
+            </div>
+            <div class="qr-code">
+                <img th:src="@{'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Evento:'+${evento.idEvento}+'-Pedido:'+${pedido.idPedido}}"
+                     alt="QR Code do Ingresso" />
+            </div>
+        </div>
+    </div>
+
+    <script class="no-print">
+        window.onload = function() {
+             window.print();
+        }
+    </script>
+</body>
+</html>

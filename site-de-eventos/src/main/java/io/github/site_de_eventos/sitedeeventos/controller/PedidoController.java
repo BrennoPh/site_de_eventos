@@ -1,6 +1,7 @@
 package io.github.site_de_eventos.sitedeeventos.controller;
 
 import io.github.site_de_eventos.sitedeeventos.model.Evento;
+import io.github.site_de_eventos.sitedeeventos.model.Pedido;
 import io.github.site_de_eventos.sitedeeventos.model.Usuario;
 import io.github.site_de_eventos.sitedeeventos.service.EventoService;
 import io.github.site_de_eventos.sitedeeventos.service.PedidoService;
@@ -13,7 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import org.springframework.http.HttpHeaders; 
+import org.springframework.http.MediaType; 
+import org.springframework.http.ResponseEntity;
+import java.util.HashMap; 
+import java.util.Map; 
 import java.util.Optional;
 import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
 
@@ -26,6 +31,7 @@ public class PedidoController {
 
     private final PedidoService pedidoService;
     private final EventoService eventoService;
+
     /**
      * Repositório de Usuário, para acesso direto aos dados atualizados do usuário no banco.
      */
@@ -130,5 +136,24 @@ public class PedidoController {
 
         // Redireciona o usuário de volta para a lista de seus eventos/pedidos.
         return "redirect:/meus-eventos";
+    }
+    
+    @GetMapping("/pedidos/{pedidoId}/ingresso")
+    public String exibirPaginaIngresso(@PathVariable("pedidoId") int pedidoId, HttpSession session, Model model) {
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        Pedido pedido = usuarioLogado.getPedidos().stream()
+            .filter(p -> p.getIdPedido() == pedidoId)
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Pedido não encontrado ou não pertence a este usuário."));
+
+        model.addAttribute("usuario", usuarioLogado);
+        model.addAttribute("pedido", pedido);
+        model.addAttribute("evento", pedido.getEvento());
+
+        return "ingresso"; // Retorna o nome do novo template: ingresso.html
     }
 }

@@ -202,9 +202,48 @@ header {
   cursor: pointer;
 }
 
+
+
+.btn {
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Botão de Detalhes (neutro) */
+.btn-neutral {
+    background-color: var(--card-light);
+    border-color: var(--border);
+    color: var(--muted);
+}
+.btn-neutral:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Botão de Imprimir (primário) */
+.btn-primary {
+    background-color: #3498db; /* Azul */
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+/* Botão de Desistir (perigo) */
+.btn-danger {
+    background-color: transparent;
+    border-color: #e74c3c; /* Vermelho */
+    color: #e74c3c;
+}
 .btn-danger:hover {
-    background-color: #e74c3c !important;
-    color: var(--white) !important;
+    background-color: #e74c3c;
+    color: white;
 }
 
 .nav {

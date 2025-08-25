@@ -3,7 +3,7 @@ package io.github.site_de_eventos.sitedeeventos.controller;
 import io.github.site_de_eventos.sitedeeventos.model.Evento;
 import io.github.site_de_eventos.sitedeeventos.model.Organizador;
 import io.github.site_de_eventos.sitedeeventos.model.Usuario;
-import io.github.site_de_eventos.sitedeeventos.service.EventoService;
+import io.github.site_de_eventos.sitedeeventos.service.CEventoService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,20 +24,20 @@ import java.util.Optional;
  * Controlador responsável por gerenciar as requisições web relacionadas a Eventos.
  * <p>
  * Esta classe lida com a exibição, criação, busca e cancelamento de eventos,
- * interagindo com a camada de serviço ({@link EventoService}) para executar a lógica de negócio.
+ * interagindo com a camada de serviço ({@link CEventoService}) para executar a lógica de negócio.
  *
  * @author Brenno P. S. Santos, Sibele C. Oliveira, Silas S. Santos
  * @version 1.0
  * @since 25-08-2025
  */
 @Controller // Anotação que marca esta classe como um Controller do Spring MVC.
-public class EventoController {
+public class CEventoController {
 
     /**
      * Serviço para gerenciar a lógica de negócio de Eventos.
      */
     @Autowired // Anotação que instrui o Spring a injetar uma instância de EventoService aqui.
-    private EventoService eventoService;
+    private CEventoService eventoService;
 
     /**
      * Exibe a página principal (index) com a lista de eventos, com suporte a busca.
