@@ -80,6 +80,7 @@ public interface IUsuarioBuilder {
      */
     public IUsuarioBuilder pedidos(Pedido pedidos);
 
+    public IUsuarioBuilder pegaPedidos(List<Pedido> pedidos);
     /**
      * Finaliza a construção e retorna o objeto {@link Usuario} completo.
      * @return O objeto {@link Usuario} construído.
