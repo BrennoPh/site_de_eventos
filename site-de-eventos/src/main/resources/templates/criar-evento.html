@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Criar Novo Evento</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        .form-page-container { max-width: 800px; margin: 2rem auto; padding: 2.5rem; background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); }
-        .form-page-container h1 { text-align: center; margin-bottom: 2rem; }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; }
-        .form-group input, .form-group textarea { width: 100%; padding: 0.75rem; border-radius: 8px; background: #1a1a1a; border: 1px solid var(--border); color: var(--white); font-size: 1rem; font-family: 'Montserrat', sans-serif; }
-        .form-group textarea { min-height: 120px; }
-    </style>
 </head>
+
 <body>
     <div class="form-page-container">
         <h1>Cadastrar Novo Evento</h1>
@@ -51,21 +45,21 @@
                 <input type="url" id="imageUrl" name="imageUrl" placeholder="https://exemplo.com/imagem.jpg">
             </div>
             <hr style="border-color: var(--border); margin: 2rem 0;">
-<h3 style="margin-bottom: 1rem;">Cupom de Desconto (Opcional)</h3>
+            <h3 style="margin-bottom: 1rem;">Cupom de Desconto (Opcional)</h3>
 
-<div class="form-group">
-    <label for="cupomCode">Código do Cupom</label>
-    <input type="text" id="cupomCode" name="cupomCode" placeholder="EX: PROMO10">
-</div>
-<div class="form-group">
-    <label for="cupomDiscountValue">Valor do Desconto (R$)</label>
-    <input type="number" id="cupomDiscountValue" name="cupomDiscountValue" min="0" step="0.01" value="0.0">
-</div>
+            <div class="form-group">
+                <label for="cupomCode">Código do Cupom</label>
+                <input type="text" id="cupomCode" name="cupomCode" placeholder="EX: PROMO10">
+            </div>
+            <div class="form-group">
+                <label for="cupomDiscountValue">Valor do Desconto (R$)</label>
+                <input type="number" id="cupomDiscountValue" name="cupomDiscountValue" min="0" step="0.01" value="0.0">
+            </div>
 
-            <button type="submit" class="btn-accent" style="width:100%; margin-top: 1rem;">
-            
+            <button type="submit" class="btn-accent" style="width:100%; margin-top: 1rem;">Criar Evento
             </button>
         </form>
     </div>
 </body>
-</html> 
+
+</html>

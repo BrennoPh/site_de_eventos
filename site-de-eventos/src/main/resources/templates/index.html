@@ -32,7 +32,7 @@
                     style="color: var(--white); text-decoration: none;">Meus Ingressos</a>
             </nav>
 
-            <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 1.5rem; margin-left: 2rem;">
                 <div th:if="${session.usuarioLogado == null}">
                     <a href="/login" style="color: var(--white); text-decoration: none;">Entrar</a>
                 </div>
@@ -50,7 +50,8 @@
 
         <section class="hero">
             <div class="left">
-                <h2 th:text="|Ei, ${nomeUsuario}, sua próxima experiência está aqui!|">Ei, sua próxima experiência está
+                <h2 th:text="|Ei, ${#strings.arraySplit(nomeUsuario, ' ')[0]}, sua próxima experiência está aqui!|">Ei,
+                    sua próxima experiência está
                     aqui!</h2>
                 <div class="stats">
                     <div class="stat">
@@ -88,21 +89,24 @@
                             <a th:href="@{/evento/{id}(id=${evento.idEvento})}" class="btn-muted"
                                 style="text-decoration: none;">Detalhes</a>
 
-                            <div th:if="${evento.ingressosDisponiveis > 0}">
-                                <a th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent"
-                                    style="text-decoration: none;">Ingressos</a>
-                            </div>
-                            <div th:if="${evento.ingressosDisponiveis <= 0}">
-                                <button class="btn-muted" disabled style="cursor: not-allowed;">Esgotado</button>
-                            </div>
+                            <a th:if="${evento.ingressosDisponiveis > 0}"
+                                th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent"
+                                style="text-decoration: none;">Ingressos</a>
+
+                            <button th:if="${evento.ingressosDisponiveis <= 0}" class="btn-muted" disabled
+                                style="cursor: not-allowed;">Esgotado</button>
+                        </div>
+                        <div th:if="${evento.ingressosDisponiveis <= 0}">
+                            <button class="btn-muted" disabled style="cursor: not-allowed;">Esgotado</button>
                         </div>
                     </div>
                 </div>
-                <div class="empty-card" th:if="${eventos.isEmpty()}">
-                    Nenhum evento encontrado. <a href="/eventos/novo">Crie o primeiro!</a>
-                </div>
             </div>
-        </main>
+            <div class="empty-card" th:if="${eventos.isEmpty()}">
+                Nenhum evento encontrado. <a href="/eventos/novo">Crie o primeiro!</a>
+            </div>
+    </div>
+    </main>
     </div>
 
     <div id="mapModal" class="modal" aria-hidden="true">
