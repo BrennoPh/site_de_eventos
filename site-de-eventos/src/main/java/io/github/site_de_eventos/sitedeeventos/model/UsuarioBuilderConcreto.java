@@ -22,7 +22,6 @@ public class UsuarioBuilderConcreto implements IUsuarioBuilder {
     /**
      * Construtor que inicializa um novo objeto {@link Usuario} para ser configurado.
      */
-    @Override
     public UsuarioBuilderConcreto() {
         this.usuario = new Usuario();
     }
