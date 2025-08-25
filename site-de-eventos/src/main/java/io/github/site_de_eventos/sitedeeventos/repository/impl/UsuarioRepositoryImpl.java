@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -30,6 +32,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import io.github.site_de_eventos.sitedeeventos.model.OrganizadorBuilderConcreto;
+import io.github.site_de_eventos.sitedeeventos.model.Pedido;
 import io.github.site_de_eventos.sitedeeventos.model.Usuario;
 import io.github.site_de_eventos.sitedeeventos.model.UsuarioBuilderConcreto;
 import io.github.site_de_eventos.sitedeeventos.model.builder.IOrganizadorBuilder;
@@ -146,21 +149,29 @@ class UsuarioTypeAdapter implements JsonDeserializer<Usuario> {
     public Usuario deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
 
+        Type pedidoListType = new TypeToken<ArrayList<Pedido>>() {}.getType();
+
+        List<Pedido> pedidos = Collections.emptyList(); 
+        if (jsonObject.has("pedidos") && jsonObject.get("pedidos").isJsonArray()) {
+            JsonArray pedidosArray = jsonObject.getAsJsonArray("pedidos");
+            pedidos = context.deserialize(pedidosArray, pedidoListType);
+        }
+
         if (jsonObject.has("cnpj")) {
-            // Usa o OrganizadorBuilder para criar o objeto
             IOrganizadorBuilder builder = new OrganizadorBuilderConcreto();
-            ((OrganizadorBuilderConcreto)builder.idUsuario(jsonObject.get("idUsuario").getAsInt())
+            ((OrganizadorBuilderConcreto) builder.idUsuario(jsonObject.get("idUsuario").getAsInt())
                    .nome(jsonObject.has("nome") ? jsonObject.get("nome").getAsString() : null)
-                   .email(jsonObject.has("email") ? jsonObject.get("email").getAsString() : null))
+                   .email(jsonObject.has("email") ? jsonObject.get("email").getAsString() : null)
+                   .pegaPedidos(pedidos))
                    .cnpj(jsonObject.has("cnpj") ? jsonObject.get("cnpj").getAsString() : null)
-                   .contaBancaria(jsonObject.has("contaBancaria") ? jsonObject.get("contaBancaria").getAsString() : null);
+                   .contaBancaria(jsonObject.has("contaBancaria") ? jsonObject.get("contaBancaria").getAsString() : null); 
             return builder.build();
         } else {
-            // Usa o UsuarioBuilder para criar o objeto
             IUsuarioBuilder builder = new UsuarioBuilderConcreto();
             builder.idUsuario(jsonObject.get("idUsuario").getAsInt())
                    .nome(jsonObject.has("nome") ? jsonObject.get("nome").getAsString() : null)
-                   .email(jsonObject.has("email") ? jsonObject.get("email").getAsString() : null);
+                   .email(jsonObject.has("email") ? jsonObject.get("email").getAsString() : null)
+                   .pegaPedidos(pedidos); 
             return builder.build();
         }
     }
