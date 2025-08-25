@@ -1,6 +1,7 @@
 package io.github.site_de_eventos.sitedeeventos.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import io.github.site_de_eventos.sitedeeventos.model.builder.IUsuarioBuilder;
 
 /**
