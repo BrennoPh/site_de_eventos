@@ -1,10 +1,10 @@
 package io.github.site_de_eventos.sitedeeventos.controller;
 
-import io.github.site_de_eventos.sitedeeventos.model.Evento;
-import io.github.site_de_eventos.sitedeeventos.model.Organizador;
-import io.github.site_de_eventos.sitedeeventos.model.Usuario;
-import io.github.site_de_eventos.sitedeeventos.service.CEventoService;
-import jakarta.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import io.github.site_de_eventos.sitedeeventos.model.Evento;
+import io.github.site_de_eventos.sitedeeventos.model.Organizador;
+import io.github.site_de_eventos.sitedeeventos.model.Usuario;
+import io.github.site_de_eventos.sitedeeventos.service.EventoService;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Controlador responsável por gerenciar as requisições web relacionadas a

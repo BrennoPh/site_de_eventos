@@ -39,7 +39,7 @@ class UsuarioControllerTest {
 
     @Test
     void processarCadastro_validData_shouldReturnLoginView() throws Exception {
-        when(usuarioService.registrar(any(), any(), any(), any(), any(), any(), any(), anyBoolean(), any(), any()))
+        when(usuarioService.registrar(any(), any(),any(), any(), any(), any(), any(), any(), anyBoolean(), any(), any()))
                 .thenReturn(new Usuario());
 
         mockMvc.perform(post("/cadastro")

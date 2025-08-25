@@ -1,30 +1,31 @@
 package io.github.site_de_eventos.sitedeeventos.service;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import io.github.site_de_eventos.sitedeeventos.model.Evento;
+import io.github.site_de_eventos.sitedeeventos.model.EventoBuilderConcreto;
 import io.github.site_de_eventos.sitedeeventos.model.Organizador;
 import io.github.site_de_eventos.sitedeeventos.model.Pedido;
 import io.github.site_de_eventos.sitedeeventos.model.Usuario;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IEventoBuilder;
 import io.github.site_de_eventos.sitedeeventos.repository.EventoRepository;
 import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import io.github.site_de_eventos.sitedeeventos.model.EventoBuilderConcreto;
-import io.github.site_de_eventos.sitedeeventos.model.builder.IEventoBuilder;
-import java.time.LocalDateTime;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Comparator;
-import java.util.stream.Collectors;
 
 @Service
-public class CEventoService {
+public class EventoService {
 
     private final EventoRepository eventoRepository;
     private final UsuarioRepository usuarioRepository;
 
     @Autowired
-    public CEventoService(EventoRepository eventoRepository, UsuarioRepository usuarioRepository) {
+    public EventoService(EventoRepository eventoRepository, UsuarioRepository usuarioRepository) {
         this.eventoRepository = eventoRepository;
         this.usuarioRepository = usuarioRepository;
     }

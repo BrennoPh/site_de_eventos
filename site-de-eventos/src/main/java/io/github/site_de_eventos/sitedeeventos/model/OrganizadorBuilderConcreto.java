@@ -2,6 +2,7 @@ package io.github.site_de_eventos.sitedeeventos.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 import io.github.site_de_eventos.sitedeeventos.model.builder.IOrganizadorBuilder;
 import io.github.site_de_eventos.sitedeeventos.model.builder.IUsuarioBuilder;
 
@@ -58,6 +59,16 @@ public class OrganizadorBuilderConcreto extends UsuarioBuilderConcreto implement
     @Override
     public IOrganizadorBuilder email(String email) {
         this.organizador.setEmail(email);
+        return this;
+    }
+    /**
+     * Define o e-mail do usuário.
+     * @param senha (String) A senha a ser definida.
+     * @return A própria instância do builder para chamadas encadeadas.
+     */
+    @Override
+    public IUsuarioBuilder senha(String senha) {
+        this.organizador.setSenha(senha);
         return this;
     }
 

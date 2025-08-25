@@ -2,6 +2,7 @@ package io.github.site_de_eventos.sitedeeventos.model.builder;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 import io.github.site_de_eventos.sitedeeventos.model.Pedido;
 import io.github.site_de_eventos.sitedeeventos.model.Usuario;
 
@@ -38,6 +39,13 @@ public interface IUsuarioBuilder {
      * @return A própria instância do builder para chamadas encadeadas.
      */
     public IUsuarioBuilder email(String email);
+
+    /**
+     * Define o e-mail do usuário.
+     * @param senha (String) A senha a ser definida.
+     * @return A própria instância do builder para chamadas encadeadas.
+     */
+    public IUsuarioBuilder senha(String senha);
 
     /**
      * Define o CPF do usuário.
