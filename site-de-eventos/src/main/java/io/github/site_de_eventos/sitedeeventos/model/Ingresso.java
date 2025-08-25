@@ -46,6 +46,8 @@ public class Ingresso {
      */
     @Expose
     private double precoIngresso;
+    
+    private Pedido pedido;
 
     /**
      * Construtor completo para a criação de um objeto Ingresso.
@@ -112,6 +114,15 @@ public class Ingresso {
     public double getPrecoIngresso() {
         return precoIngresso;
     }
+    
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+    
 
     /**
      * Define o ID da inscrição.

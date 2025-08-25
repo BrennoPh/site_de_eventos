@@ -1,0 +1,137 @@
+[
+  {
+    "contaBancaria": "123",
+    "cnpj": "123",
+    "idUsuario": 1,
+    "nome": "teste",
+    "email": "adm@gmail.com",
+    "pedidos": [
+      {
+        "idPedido": 1,
+        "evento": {
+          "idEvento": 1,
+          "capacidade": 5,
+          "ingressosDisponiveis": 3,
+          "nomeEvento": "TESTE 1",
+          "local": "TesteLocal",
+          "categoria": "teste",
+          "descrição": "teste",
+          "preco": 100.0,
+          "dataEvento": "2025-09-12T12:00",
+          "imageUrl": "https://dsop.com.br/wp-content/uploads/2024/01/62e4c32214ccf2e0c4a5fc3d_balada.jpeg",
+          "cupomCode": "",
+          "cupomDiscountValue": 0.0,
+          "status": "ATIVO",
+          "organizadorId": 1
+        },
+        "quantidadeIngressos": 2,
+        "valorBase": 200.0,
+        "valorTotal": 210.0,
+        "dataPedido": "2025-08-25T18:36:53.639787589",
+        "status": "CONCLUIDO",
+        "ingressos": [
+          {
+            "idInscricao": "1-1",
+            "idEvento": 1,
+            "nomeParticipante": "natalia",
+            "emailParticipante": "teste@example.com",
+            "dataCompra": "2025-08-25T18:36:53.640902910",
+            "precoIngresso": 100.0
+          },
+          {
+            "idInscricao": "1-2",
+            "idEvento": 1,
+            "nomeParticipante": "natalia",
+            "emailParticipante": "teste@example.com",
+            "dataCompra": "2025-08-25T18:36:53.640937512",
+            "precoIngresso": 100.0
+          }
+        ]
+      },
+      {
+        "idPedido": 2,
+        "evento": {
+          "idEvento": 2,
+          "capacidade": 5,
+          "ingressosDisponiveis": 3,
+          "nomeEvento": "TESTE 1",
+          "local": "11",
+          "categoria": "asdad",
+          "descrição": "aasd",
+          "preco": 100.0,
+          "dataEvento": "2225-09-12T00:00",
+          "imageUrl": "https://dsop.com.br/wp-content/uploads/2024/01/62e4c32214ccf2e0c4a5fc3d_balada.jpeg",
+          "cupomCode": "PROMO5",
+          "cupomDiscountValue": 5.0,
+          "status": "ATIVO",
+          "organizadorId": 1
+        },
+        "quantidadeIngressos": 2,
+        "valorBase": 200.0,
+        "valorTotal": 204.75,
+        "dataPedido": "2025-08-25T18:38:45.454291776",
+        "status": "CONCLUIDO",
+        "ingressos": [
+          {
+            "idInscricao": "2-1",
+            "idEvento": 2,
+            "nomeParticipante": "asdasd",
+            "emailParticipante": "adm@example.com",
+            "dataCompra": "2025-08-25T18:38:45.456268328",
+            "precoIngresso": 100.0
+          },
+          {
+            "idInscricao": "2-2",
+            "idEvento": 2,
+            "nomeParticipante": "asd",
+            "emailParticipante": "adm@example.com",
+            "dataCompra": "2025-08-25T18:38:45.456315467",
+            "precoIngresso": 100.0
+          }
+        ]
+      },
+      {
+        "idPedido": 1,
+        "evento": {
+          "idEvento": 3,
+          "capacidade": 5,
+          "ingressosDisponiveis": 3,
+          "nomeEvento": "DESCONTO",
+          "local": "DESCONTO",
+          "categoria": "DESCONTO",
+          "descrição": "DESCONTO",
+          "preco": 100.0,
+          "dataEvento": "2025-09-12T00:00",
+          "imageUrl": "https://dsop.com.br/wp-content/uploads/2024/01/62e4c32214ccf2e0c4a5fc3d_balada.jpeg",
+          "cupomCode": "PROMO10",
+          "cupomDiscountValue": 10.0,
+          "status": "ATIVO",
+          "organizadorId": 1
+        },
+        "quantidadeIngressos": 2,
+        "valorBase": 200.0,
+        "valorTotal": 199.5,
+        "dataPedido": "2025-08-25T18:41:57.522965625",
+        "status": "CONCLUIDO",
+        "ingressos": [
+          {
+            "idInscricao": "3-1",
+            "idEvento": 3,
+            "nomeParticipante": "natalia",
+            "emailParticipante": "teste@example.com",
+            "dataCompra": "2025-08-25T18:41:57.524736345",
+            "precoIngresso": 100.0
+          },
+          {
+            "idInscricao": "3-2",
+            "idEvento": 3,
+            "nomeParticipante": "natalia",
+            "emailParticipante": "adm@example.com",
+            "dataCompra": "2025-08-25T18:41:57.524777043",
+            "precoIngresso": 100.0
+          }
+        ]
+      }
+    ]
+  }
+]

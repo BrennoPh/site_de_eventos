@@ -1,0 +1,50 @@
+[
+  {
+    "idEvento": 1,
+    "capacidade": 5,
+    "ingressosDisponiveis": 3,
+    "nomeEvento": "TESTE 1",
+    "local": "TesteLocal",
+    "categoria": "teste",
+    "descrição": "teste",
+    "preco": 100.0,
+    "dataEvento": "2025-09-12T12:00",
+    "imageUrl": "https://dsop.com.br/wp-content/uploads/2024/01/62e4c32214ccf2e0c4a5fc3d_balada.jpeg",
+    "cupomCode": "",
+    "cupomDiscountValue": 0.0,
+    "status": "ATIVO",
+    "organizadorId": 1
+  },
+  {
+    "idEvento": 2,
+    "capacidade": 5,
+    "ingressosDisponiveis": 3,
+    "nomeEvento": "TESTE 1",
+    "local": "11",
+    "categoria": "asdad",
+    "descrição": "aasd",
+    "preco": 100.0,
+    "dataEvento": "2225-09-12T00:00",
+    "imageUrl": "https://dsop.com.br/wp-content/uploads/2024/01/62e4c32214ccf2e0c4a5fc3d_balada.jpeg",
+    "cupomCode": "PROMO5",
+    "cupomDiscountValue": 5.0,
+    "status": "ATIVO",
+    "organizadorId": 1
+  },
+  {
+    "idEvento": 3,
+    "capacidade": 5,
+    "ingressosDisponiveis": 3,
+    "nomeEvento": "DESCONTO",
+    "local": "DESCONTO",
+    "categoria": "DESCONTO",
+    "descrição": "DESCONTO",
+    "preco": 100.0,
+    "dataEvento": "2025-09-12T00:00",
+    "imageUrl": "https://dsop.com.br/wp-content/uploads/2024/01/62e4c32214ccf2e0c4a5fc3d_balada.jpeg",
+    "cupomCode": "PROMO10",
+    "cupomDiscountValue": 10.0,
+    "status": "ATIVO",
+    "organizadorId": 1
+  }
+]

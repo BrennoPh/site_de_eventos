@@ -64,6 +64,7 @@ public class Pedido {
      * @see Usuario
      */
     private Usuario usuario;
+    	
 
     /**
      * Construtor principal para criar um novo pedido.
@@ -173,6 +174,7 @@ public class Pedido {
     public double getValorBase() {
         return valorBase;
     }
+    
 
     /**
      * Define o valor base do pedido.

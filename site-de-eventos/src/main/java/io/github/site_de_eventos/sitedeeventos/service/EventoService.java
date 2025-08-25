@@ -18,13 +18,13 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @Service
-public class CEventoService {
+public class EventoService {
 
     private final EventoRepository eventoRepository;
     private final UsuarioRepository usuarioRepository;
 
     @Autowired
-    public CEventoService(EventoRepository eventoRepository, UsuarioRepository usuarioRepository) {
+    public EventoService(EventoRepository eventoRepository, UsuarioRepository usuarioRepository) {
         this.eventoRepository = eventoRepository;
         this.usuarioRepository = usuarioRepository;
     }

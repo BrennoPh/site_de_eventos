@@ -3,7 +3,7 @@ package io.github.site_de_eventos.sitedeeventos.controller;
 import io.github.site_de_eventos.sitedeeventos.model.Evento;
 import io.github.site_de_eventos.sitedeeventos.model.Organizador;
 import io.github.site_de_eventos.sitedeeventos.model.Usuario;
-import io.github.site_de_eventos.sitedeeventos.service.CEventoService;
+import io.github.site_de_eventos.sitedeeventos.service.EventoService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

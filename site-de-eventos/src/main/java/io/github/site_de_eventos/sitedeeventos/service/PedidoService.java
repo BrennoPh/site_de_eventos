@@ -30,71 +30,80 @@ public class PedidoService {
         this.eventoRepository = eventoRepository;
     }
 
-    public Pedido criarPedido(int usuarioId, int eventoId, int quantidade, String cupomCode) {
+    public Pedido criarPedido(int usuarioId, int eventoId, List<String> nomes, List<String> emails, String cupomCode) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + usuarioId));
         Evento evento = eventoRepository.findById(eventoId)
                 .orElseThrow(() -> new RuntimeException("Evento não encontrado com ID: " + eventoId));
 
+        int quantidade = nomes.size();
         if (evento.getIngressosDisponiveis() < quantidade) {
             throw new RuntimeException("Não há ingressos suficientes. Disponíveis: " + evento.getIngressosDisponiveis());
         }
 
         Pedido pedido = new Pedido(usuario, evento, quantidade);
-        pedido.setIdPedido(pedidoIdGenerator.incrementAndGet()); // Adicionar esta linha para setar o ID
+        pedido.setIdPedido(pedidoIdGenerator.incrementAndGet());
 
-        // 1. Define o valor base (preço original sem taxas ou descontos)
+        // 1. Define o valor base (preço original * quantidade).
         double valorBase = evento.getPreco() * quantidade;
         pedido.setValorBase(valorBase);
-
-        // Inicia o valor final com o valor base
+        
+        // --- INÍCIO DO CÁLCULO COM STRATEGY ---
+        
+        // Inicializa o valor final com o valor base. Ele será modificado pelas estratégias.
         double valorFinal = valorBase;
 
-        // 2. Aplica o cupom de desconto, se for válido
+        // 2. Aplica a ESTRATÉGIA de cupom de desconto, se um cupom válido for fornecido.
         if (cupomCode != null && !cupomCode.isEmpty() && cupomCode.equalsIgnoreCase(evento.getCupomCode())) {
-            // Usa a strategy de desconto sobre o valor atual
+            // Instancia a estratégia de desconto com o valor de desconto do evento.
             ICalculoPrecoPedidoStrategy cupomStrategy = new CalculoComCupomDesconto(evento.getCupomDiscountValue());
-            // Aqui, passamos um pedido temporário para a strategy, para não modificar o valor base do pedido real ainda
-            Pedido pedidoParaDesconto = new Pedido();
-            pedidoParaDesconto.setValorBase(valorFinal);
-            valorFinal = cupomStrategy.calcularPreco(pedidoParaDesconto);
+            
+            // Cria um pedido temporário para o cálculo, para não modificar o valor base do pedido real.
+            Pedido pedidoParaCalculo = new Pedido();
+            pedidoParaCalculo.setValorBase(valorFinal); // O valor base para o cálculo é o valor atual.
+            
+            // Calcula o novo valor final aplicando o desconto.
+            valorFinal = cupomStrategy.calcularPreco(pedidoParaCalculo);
         }
 
-        // 3. Aplica a taxa de serviço sobre o valor já com desconto
+        // 3. Aplica a ESTRATÉGIA de taxa de serviço sobre o valor (já com o possível desconto).
         ICalculoPrecoPedidoStrategy taxaStrategy = new CalculoComTaxaServico();
-        // Passamos um pedido temporário com o valor atualizado para a strategy
-        Pedido pedidoParaTaxa = new Pedido();
-        pedidoParaTaxa.setValorBase(valorFinal);
-        valorFinal = taxaStrategy.calcularPreco(pedidoParaTaxa);
+        
+        // Usa-se outro pedido temporário para o cálculo da taxa.
+        Pedido pedidoParaCalculo = new Pedido();
+        pedidoParaCalculo.setValorBase(valorFinal); // O valor base para este cálculo é o valor após o desconto.
+        
+        // Calcula o valor final definitivo aplicando a taxa.
+        valorFinal = taxaStrategy.calcularPreco(pedidoParaCalculo);
 
-        // 4. Define o valor total final no pedido
+        // 4. ETAPA CRUCIAL: Define o valor total calculado no objeto de pedido principal.
         pedido.setValorTotal(valorFinal);
         
-        confirmarPedido(pedido);
+        confirmarPedido(pedido, nomes, emails);
         usuario.adicionarPedido(pedido);
         usuarioRepository.save(usuario);
 
         return pedido;
     }
-
-    private void confirmarPedido(Pedido pedido) {
+    
+    // MÉTODO ATUALIZADO
+    private void confirmarPedido(Pedido pedido, List<String> nomes, List<String> emails) {
         Evento evento = pedido.getEvento();
         int quantidadeComprada = pedido.getQuantidadeIngressos();
         
         int primeiroIngressoNum = evento.getCapacidade() - evento.getIngressosDisponiveis() + 1;
-
-        int ingressosRestantes = evento.getIngressosDisponiveis() - quantidadeComprada;
-        evento.setIngressosDisponiveis(ingressosRestantes);
+        evento.setIngressosDisponiveis(evento.getIngressosDisponiveis() - quantidadeComprada);
         eventoRepository.save(evento);
 
         List<Ingresso> ingressosComprados = new ArrayList<>();
         for (int i = 0; i < quantidadeComprada; i++) {
             String novoIdIngresso = evento.getIdEvento() + "-" + (primeiroIngressoNum + i);
             
+            // Usa os nomes e e-mails da lista para criar cada ingresso
             Ingresso novoIngresso = new Ingresso(novoIdIngresso, evento.getIdEvento(), 
-                pedido.getUsuario().getNome(), pedido.getUsuario().getEmail(), 
-                LocalDateTime.now(), evento.getPreco());
+                nomes.get(i), emails.get(i), LocalDateTime.now(), evento.getPreco());
             
+            novoIngresso.setPedido(pedido); // Associa o ingresso ao pedido
             ingressosComprados.add(novoIngresso);
         }
         pedido.setIngressos(ingressosComprados);

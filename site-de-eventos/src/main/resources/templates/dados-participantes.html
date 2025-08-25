@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dados dos Participantes</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="form-page-container" style="max-width: 800px;">
+        <h1>Dados dos Participantes</h1>
+        <p class="muted" th:text="|Preencha as informações para os ${quantidade} ingressos do evento '${evento.nomeEvento}'.|"></p>
+
+        <form action="/pedidos/confirmar" method="POST">
+            <input type="hidden" name="eventoId" th:value="${evento.idEvento}" />
+            
+            <div th:each="i : ${#numbers.sequence(1, quantidade)}">
+                <h3 th:text="|Ingresso ${i}|" style="border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; margin-top: 2.5rem;"></h3>
+                <div class="form-group">
+                    <label th:for="|nomeParticipante${i}|">Nome do Participante</label>
+                    <input type="text" th:id="|nomeParticipante${i}|" name="nomeParticipante" required>
+                </div>
+                <div class="form-group">
+                    <label th:for="|emailParticipante${i}|">Email do Participante</label>
+                    <input type="email" th:id="|emailParticipante${i}|" name="emailParticipante" required>
+                </div>
+            </div>
+
+            <hr style="border-color: var(--border); margin: 2rem 0;">
+
+            <div class="form-group">
+                <label for="cupomCode">Cupom de Desconto (Opcional)</label>
+                <input type="text" id="cupomCode" name="cupomCode" placeholder="Digite seu cupom aqui">
+            </div>
+
+            <button type="submit" class="btn-accent" style="width:100%; margin-top: 1rem;">
+                Finalizar Compra
+            </button>
+        </form>
+    </div>
+</body>
+</html>
