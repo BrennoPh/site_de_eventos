@@ -167,6 +167,12 @@ public class EventoBuilderConcreto implements IEventoBuilder {
         this.evento.setCupomDiscountValue(cupomDiscountValue);
         return this;
     }
+    
+    @Override
+    public IEventoBuilder organizadorId(int organizadorId) {
+        this.evento.setOrganizadorId(organizadorId);
+        return this;
+    }
 
     /**
      * Constrói e retorna o objeto {@link Evento} final.
@@ -174,6 +180,10 @@ public class EventoBuilderConcreto implements IEventoBuilder {
      */
     @Override
     public Evento build() {
+        //Define um status padrão (ATIVO) para o evento
+        if (this.evento.getStatus() == null || this.evento.getStatus().isEmpty()) {
+            this.evento.setStatus("ATIVO");
+        }
         return this.evento;
     }
 }

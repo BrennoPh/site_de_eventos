@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Meus Eventos Organizados</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container" style="padding-top: 2rem;">
+        <a href="/" style="text-decoration: none; color: var(--muted); margin-bottom: 2rem; display: inline-block;">&larr; Voltar para o início</a>
+        <h1>Meus Eventos Organizados</h1>
+        <p class="muted">Gerencie os eventos que você criou.</p>
+
+        <div th:if="${sucesso}" class="alert-success" th:text="${sucesso}"
+             style="background-color: #2ecc71; color: white; padding: 1rem; text-align: center; border-radius: 8px; margin: 1rem 0;">
+        </div>
+        <div th:if="${erro}" class="alert-danger" th:text="${erro}"
+             style="background-color: #e74c3c; color: white; padding: 1rem; text-align: center; border-radius: 8px; margin: 1rem 0;">
+        </div>
+
+        <div class="events" style="margin-top: 2rem;">
+            <div class="card" th:each="evento : ${eventosOrganizados}">
+                <div class="body">
+                    <h3 th:text="${evento.nomeEvento}">Nome do Evento</h3>
+                    <div class="meta">
+                        <span th:text="'📅 ' + ${#temporals.format(evento.dataEvento, 'dd MMM, HH:mm')}"></span>
+                        <span th:text="'📍 ' + ${evento.local}"></span>
+                    </div>
+                    
+                    <div class="pedido-info" style="margin-top: 1rem; font-size: 0.9rem;">
+                        <div><strong>Status:</strong> 
+                            <span th:text="${evento.status}" 
+                                  th:classappend="${evento.status == 'CANCELADO'} ? 'tag-danger' : 'tag-success'"
+                                  class="tag"
+                                  th:style="${evento.status == 'CANCELADO'} ? 'background-color: #e74c3c;' : 'background-color: #2ecc71;'">
+                            </span>
+                        </div>
+                        <div>
+                            <strong>Ingressos Vendidos:</strong> 
+                            <span th:text="${evento.capacidade - evento.ingressosDisponiveis}"></span> / <span th:text="${evento.capacidade}"></span>
+                        </div>
+                    </div>
+
+                    <div class="card-actions" style="margin-top: 1rem;">
+                        <form th:if="${evento.status != 'CANCELADO'}" 
+                              th:action="@{/eventos/{id}/cancelar(id=${evento.idEvento})}" method="POST">
+                            <button type="submit" class="btn-danger" 
+                                    onclick="return confirm('Atenção: Cancelar este evento irá torná-lo indisponível para novas compras. Confirma?');">
+                                Cancelar Evento
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="empty-card" th:if="${eventosOrganizados == null || eventosOrganizados.isEmpty()}">
+                Você ainda não criou nenhum evento. <a href="/eventos/novo">Crie o seu primeiro!</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

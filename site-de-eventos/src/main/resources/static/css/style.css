@@ -202,6 +202,11 @@ header {
   cursor: pointer;
 }
 
+.btn-danger:hover {
+    background-color: #e74c3c !important;
+    color: var(--white) !important;
+}
+
 .nav {
   position: fixed;
   left: 0;

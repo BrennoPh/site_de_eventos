@@ -112,5 +112,7 @@ public interface IEventoBuilder {
      * Finaliza a construção e retorna o objeto {@link Evento} completo.
      * @return O objeto {@link Evento} construído.
      */
+    
+    public IEventoBuilder organizadorId(int organizadorId);
     public Evento build();
 }

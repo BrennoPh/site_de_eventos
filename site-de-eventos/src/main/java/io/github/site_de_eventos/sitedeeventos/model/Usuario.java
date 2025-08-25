@@ -211,15 +211,21 @@ public class Usuario {
 		this.dataNascimento = dataNascimento;
 	}
 	
-    /**
-     * Adiciona um pedido à lista de pedidos do usuário.
-     * @param pedido ({@link Pedido}) O pedido a ser adicionado.
-     */
-	public void adicionarPedido(Pedido pedido) {
+    public void adicionarPedido(Pedido pedido) {
+        if (this.pedidos == null) {
+            this.pedidos = new ArrayList<>();
+        }
         this.pedidos.add(pedido);
     }
+    
+    public void removerPedido(int pedidoId) {
+        if (this.pedidos != null) {
+            this.pedidos.removeIf(p -> p.getIdPedido() == pedidoId);
+        }
+    }
+
 	public void setPedidos(List<Pedido> pedidos) {
-    this.pedidos = pedidos;
-}
+        this.pedidos = pedidos;
+    }
 
 }

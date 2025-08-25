@@ -97,6 +97,12 @@ public class Evento {
      */
     @Expose
     private double cupomDiscountValue;
+    
+    @Expose
+    private String status; 
+    
+    @Expose 
+    private int organizadorId;
 
     /**
      * Construtor padrão, sem argumentos devido ao padrão de projeto BUILDER
@@ -211,8 +217,24 @@ public class Evento {
 		return cupomDiscountValue;
 	}
 
+    public String getStatus() {
+        return status;
+    }
+    
+    public int getOrganizadorId() {
+        return organizadorId;
+    }
+    
+    
+	//Setters	
 
-	//Setters		
+    public void setOrganizadorId(int organizadorId) {
+        this.organizadorId = organizadorId;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }	
 
 	/**
      * Define o código do cupom de desconto.

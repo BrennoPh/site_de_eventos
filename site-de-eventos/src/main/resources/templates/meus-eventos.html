@@ -16,29 +16,50 @@
         </div>
 
         <div class="events" style="margin-top: 2rem;">
-            <div class="card" th:each="pedido : ${pedidos}">
-                <div class="thumb" 
-                     th:style="'background-image: url(' + (${pedido.evento.imageUrl != null and not #strings.isEmpty(pedido.evento.imageUrl)} ? ${pedido.evento.imageUrl} : 'https://source.unsplash.com/random/400x200/?party,concert') + ');'">
-                </div>
-                <div class="body">
-                    <h3 th:text="${pedido.evento.nomeEvento}">Nome do Evento</h3>
-                    <div class="meta">
-                        <span th:text="'📅 ' + ${#temporals.format(pedido.evento.dataEvento, 'dd MMM, HH:mm')}"></span>
-                        <span th:text="'📍 ' + ${pedido.evento.local}"></span>
-                    </div>
-                    
-                    <div class="pedido-info" style="margin-top: 1rem; font-size: 0.9rem;">
-                        <div><strong>Ingressos Comprados:</strong> <span th:text="${pedido.quantidadeIngressos}">1</span></div>
-                        <div><strong>Valor Total Pago:</strong> R$ <span th:text="${#numbers.formatDecimal(pedido.valorTotal, 1, 'POINT', 2, 'COMMA')}">0,00</span></div>
-                    </div>
+            
 
-                    <div class="card-actions" style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
-                        <a th:href="@{/evento/{id}(id=${pedido.evento.idEvento})}" class="btn-muted" 
-                           style="text-decoration: none;">Detalhes</a>
-                        <span class="tag" style="background-color: var(--accent);" th:text="${pedido.status}">Confirmado</span>
+        <div class="card" th:each="pedido : ${pedidos}">
+            <div class="thumb" 
+                th:style="'background-image: url(' + (${pedido.evento.imageUrl != null and not #strings.isEmpty(pedido.evento.imageUrl)} ? ${pedido.evento.imageUrl} : 'https://source.unsplash.com/random/400x200/?party,concert') + ');'">
+            </div>
+            <div class="body">
+                <h3 th:text="${pedido.evento.nomeEvento}">Nome do Evento</h3>
+                <div class="meta">
+                    <span th:text="'📅 ' + ${#temporals.format(pedido.evento.dataEvento, 'dd MMM, HH:mm')}"></span>
+                    <span th:text="'📍 ' + ${pedido.evento.local}"></span>
+                </div>
+                
+                <div class="pedido-info" style="margin-top: 1rem; font-size: 0.9rem;">
+                    <div><strong>Ingressos Comprados:</strong> <span th:text="${pedido.quantidadeIngressos}">1</span></div>
+                    <div><strong>Valor Total Pago:</strong> R$ <span th:text="${#numbers.formatDecimal(pedido.valorTotal, 1, 'POINT', 2, 'COMMA')}">0,00</span></div>
+                    
+                    <div th:if="${pedido.status == 'CANCELADO_PELO_USUARIO'}" style="color: #e67e22; margin-top: 0.5rem;">
+                        <strong>Aviso:</strong> Você desistiu desta compra. O reembolso será processado.
                     </div>
+                    <div th:if="${pedido.status == 'CANCELADO_PELO_ORGANIZADOR'}" style="color: #c0392b; margin-top: 0.5rem;">
+                        <strong>Aviso:</strong> O evento foi cancelado pelo organizador. O reembolso será processado.
+                    </div>
+                </div>
+
+                <div class="card-actions" style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <a th:href="@{/evento/{id}(id=${pedido.evento.idEvento})}" class="btn-muted" 
+                    style="text-decoration: none;">Detalhes</a>
+                    
+                    <form th:if="${pedido.status == 'CONCLUIDO'}" th:action="@{/pedidos/{pedidoId}/cancelar(pedidoId=${pedido.idPedido})}" method="POST" style="margin: 0;">
+                        <button type="submit" class="btn-danger" style="border: 1px solid #e74c3c; background: transparent; color: #e74c3c; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;"
+                                onclick="return confirm('Tem certeza que deseja desistir desta compra?');">
+                            Desistir
+                        </button>
+                    </form>
+                    
+                    <th:block th:switch="${pedido.status}">
+                        <span th:case="'CONCLUIDO'" class="tag" style="background-color: var(--accent);">Confirmado</span>
+                        <span th:case="'CANCELADO_PELO_USUARIO'" class="tag" style="background-color: #e67e22;">Desistido</span>
+                        <span th:case="'CANCELADO_PELO_ORGANIZADOR'" class="tag" style="background-color: #e74c3c;">Cancelado</span>
+                    </th:block>
                 </div>
             </div>
+        </div>
 
             <div class="empty-card" th:if="${pedidos == null || pedidos.isEmpty()}">
                 Você ainda não comprou nenhum ingresso. <a href="/">Veja os próximos eventos!</a>
