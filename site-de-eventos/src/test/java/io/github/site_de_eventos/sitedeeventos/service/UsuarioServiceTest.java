@@ -39,7 +39,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.findByEmail("teste@email.com")).thenReturn(Optional.of(new Usuario()));
 
         assertThrows(RuntimeException.class, () -> usuarioService.registrar(
-                "Nome", "teste@email.com", "12345678900", "9999-9999",
+                "Nome", "teste@email.com","12345678", "12345678900", "9999-9999",
                 LocalDateTime.now(), "Cidade", "Endereço", false, null, null
         ));
     }
@@ -51,7 +51,7 @@ class UsuarioServiceTest {
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(u);
 
         Usuario result = usuarioService.registrar(
-                "Nome", "novo@email.com", "12345678900", "9999-9999",
+                "Nome", "novo@email.com","12345678", "12345678900", "9999-9999",
                 LocalDateTime.now(), "Cidade", "Endereço", false, null, null
         );
 

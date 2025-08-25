@@ -1,10 +1,11 @@
 package io.github.site_de_eventos.sitedeeventos.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.google.gson.annotations.Expose;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.google.gson.annotations.Expose;
 
 /**
  * Representa a entidade genérica de um usuário no sistema.
@@ -35,6 +36,12 @@ public class Usuario {
      */
     @Expose
     private String email;
+    /**
+     * senha do usuário.
+     */
+    @Expose
+    private String senha;
+    
     /**
      * Cadastro de Pessoa Física (CPF) do usuário.
      */
@@ -97,6 +104,13 @@ public class Usuario {
      */
 	public String getEmail() {
 		return email;
+	}
+     /**
+     * Obtém o e-mail do usuário.
+     * @return A senha (String) do usuário.
+     */
+	public String getSenha() {
+		return senha;
 	}
 
     /**
@@ -169,6 +183,13 @@ public class Usuario {
      */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+    /**
+     * Define a senha do usuário.
+     * @param senha (String) A nova senha do usuário.
+     */
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
     /**

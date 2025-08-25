@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Cadastre-se</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
+
 <body>
     <div class="form-page-container">
         <h1>Crie sua Conta</h1>
@@ -22,6 +24,10 @@
             <div class="form-group">
                 <label for="email">Seu melhor email</label>
                 <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" required>
             </div>
             <div class="form-group">
                 <label for="cpf">CPF</label>
@@ -47,7 +53,8 @@
             <hr style="border-color: var(--border); margin: 2rem 0;">
 
             <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
-                <input type="checkbox" id="isOrganizador" name="isOrganizador" value="true" style="width: auto;" onchange="toggleOrganizadorFields()">
+                <input type="checkbox" id="isOrganizador" name="isOrganizador" value="true" style="width: auto;"
+                    onchange="toggleOrganizadorFields()">
                 <label for="isOrganizador" style="margin: 0;">Quero me cadastrar como Organizador de eventos</label>
             </div>
 
@@ -61,7 +68,7 @@
                     <input type="text" id="contaBancaria" name="contaBancaria">
                 </div>
             </div>
-            
+
             <button type="submit" class="btn-accent" style="width:100%; margin-top: 1rem;">
                 Criar Conta
             </button>
@@ -90,4 +97,5 @@
         }
     </script>
 </body>
+
 </html>

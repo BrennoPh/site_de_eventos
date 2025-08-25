@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.servlet.http.HttpSession;
 import io.github.site_de_eventos.sitedeeventos.model.Usuario;
 import io.github.site_de_eventos.sitedeeventos.service.UsuarioService;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Controlador responsável por gerenciar o ciclo de vida do usuário.
@@ -41,6 +41,7 @@ public class UsuarioController {
     public String processarCadastro(
             @RequestParam String nome,
             @RequestParam String email,
+            @RequestParam String senha,
             @RequestParam(required = false) String cpf,
             @RequestParam(required = false) String telefone,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataNascimento,
@@ -55,7 +56,7 @@ public class UsuarioController {
             LocalDateTime dataNascimentoTime = (dataNascimento != null) ? dataNascimento.atStartOfDay() : null;
 
             // Chama o serviço para registrar o usuário, passando todos os dados. O serviço lida com a lógica de ser organizador ou não.
-            usuarioService.registrar(nome, email, cpf, telefone, dataNascimentoTime, cidade, endereco, isOrganizador, cnpj, contaBancaria);
+            usuarioService.registrar(nome, email, senha , cpf, telefone, dataNascimentoTime, cidade, endereco, isOrganizador, cnpj, contaBancaria);
             
             // Se o registro for bem-sucedido, adiciona uma mensagem de sucesso ao 'Model'.
             model.addAttribute("sucesso", "Cadastro realizado! Faça o login para continuar.");
@@ -82,16 +83,26 @@ public class UsuarioController {
      * Processa a submissão do formulário de login.
      */
     @PostMapping("/login")
-    public String processarLogin(@RequestParam String email, HttpSession session, Model model) {
+    public String processarLogin(@RequestParam String email,@RequestParam String senha, HttpSession session, Model model) {
     	// Chama o serviço para autenticar o usuário pelo e-mail.
     	Optional<Usuario> usuarioOpt = usuarioService.autenticar(email);
     	// Verifica se o usuário foi encontrado no banco de dados.
     	if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            //Verifica se a senha é igual a do usuario
+            if(usuario.getSenha().equals(senha)){
     		// Se sim, armazena o objeto completo do usuário na sessão HTTP.
             // É isso que "mantém o usuário logado" durante a navegação.
-    		session.setAttribute("usuarioLogado", usuarioOpt.get());
+    		session.setAttribute("usuarioLogado", usuario);
     		// Redireciona para a página principal.
     		return "redirect:/";
+            }else{
+                // Se a não a senha é incompativel, adiciona uma mensagem de erro ao 'Model'.
+        	model.addAttribute("erro", "Email ou Senha incorretos");
+        	// E renderiza a página de login novamente para o usuário tentar de novo.
+        	return "login";
+
+            }
         } else {
             // Se o e-mail não foi encontrado, adiciona uma mensagem de erro ao 'Model'.
         	model.addAttribute("erro", "Email não encontrado. Verifique os dados ou cadastre-se.");

@@ -21,7 +21,7 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public Usuario registrar(String nome, String email, String cpf, String telefone, LocalDateTime dataNascimento,
+    public Usuario registrar(String nome, String email,String senha, String cpf, String telefone, LocalDateTime dataNascimento,
                              String cidade, String endereco, boolean isOrganizador, String cnpj, String contaBancaria) {
         
         if (usuarioRepository.findByEmail(email).isPresent()) {
@@ -36,7 +36,8 @@ public class UsuarioService {
                 .telefone(telefone)
                 .dataNascimento(dataNascimento)
                 .cidade(cidade)
-                .endereco(endereco))
+                .endereco(endereco)
+                .senha(senha))
                 .cnpj(cnpj)
                 .contaBancaria(contaBancaria)
                 .build();
@@ -46,6 +47,7 @@ public class UsuarioService {
             Usuario novoUsuario = builder
                 .nome(nome)
                 .email(email)
+                .senha(senha)
                 .cpf(cpf)
                 .telefone(telefone)
                 .dataNascimento(dataNascimento)

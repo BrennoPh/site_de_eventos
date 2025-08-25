@@ -162,6 +162,7 @@ class UsuarioTypeAdapter implements JsonDeserializer<Usuario> {
             ((OrganizadorBuilderConcreto) builder.idUsuario(jsonObject.get("idUsuario").getAsInt())
                    .nome(jsonObject.has("nome") ? jsonObject.get("nome").getAsString() : null)
                    .email(jsonObject.has("email") ? jsonObject.get("email").getAsString() : null)
+                   .senha(jsonObject.has("senha") ? jsonObject.get("senha").getAsString() : null)
                    .pegaPedidos(pedidos))
                    .cnpj(jsonObject.has("cnpj") ? jsonObject.get("cnpj").getAsString() : null)
                    .contaBancaria(jsonObject.has("contaBancaria") ? jsonObject.get("contaBancaria").getAsString() : null); 
@@ -171,6 +172,7 @@ class UsuarioTypeAdapter implements JsonDeserializer<Usuario> {
             builder.idUsuario(jsonObject.get("idUsuario").getAsInt())
                    .nome(jsonObject.has("nome") ? jsonObject.get("nome").getAsString() : null)
                    .email(jsonObject.has("email") ? jsonObject.get("email").getAsString() : null)
+                   .senha(jsonObject.has("senha") ? jsonObject.get("senha").getAsString() : null)
                    .pegaPedidos(pedidos); 
             return builder.build();
         }
