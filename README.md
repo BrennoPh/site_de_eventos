@@ -3,7 +3,7 @@
 
 # ⛩️ Xogum - Plataforma de Eventos
 
-Plataforma completa para criação e gerenciamento de eventos, desenvolvida em Java com o framework Spring Boot. O sistema permite que usuários se cadastrem, comprem ingressos para eventos, e também que organizadores criem e gerenciem seus próprios eventos.
+Este projeto trata-se de uma plataforma completa para criação e gerenciamento de eventos, desenvolvida em Java com o framework Spring Boot, além disso fizemos uso de HTML, CSS e JavaScript para o front-end. A plataforma permite que os usuários se cadastrem, comprem ingressos para eventos, e também que organizadores criem e gerenciem seus próprios eventos.
 
 O principal objetivo do projeto foi aplicar de forma prática os conceitos aprendidos durante a disciplina de Programação Orientada a Objetos em um projeto robusto e funcional.
 
@@ -72,11 +72,13 @@ Para executar o projeto localmente, siga os seguintes passos.
 
 O projeto foi estruturado para ser modular, extensível e de fácil manutenção, aplicando conceitos com destaque para o padrão arquitetural MVC (Model-View-Controller). O projeto é uma implementação clássica do padrão MVC, que é a base do Spring para aplicações web. Essa arquitetura separa as responsabilidades da aplicação em três componentes interconectados:
 
-Model: Representa os dados e a lógica de negócio. São as classes no pacote io.github.site_de_eventos.sitedeeventos.model (ex: Usuario.java, Evento.java).
+Model: Representa a estrutura dos dados e o estado das entidades. São as classes no pacote io.github.site_de_eventos.sitedeeventos.model (ex: `Usuario.java`, `Evento.java`).
 
 View: É a camada de apresentação, responsável por exibir os dados ao usuário. No projeto, são os arquivos *.html na pasta resources/templates, que utilizam o Thymeleaf para renderizar as informações dinamicamente.
 
-Controller: Atua como o intermediário. As classes no pacote ...controller (ex: EventoController.java) recebem as requisições do usuário, acionam a lógica de negócio nos Services e Models, e selecionam a View apropriada para retornar a resposta.
+Controller: Atua como o intermediário. As classes no pacote ` ...controler` (ex: : ` EventoController.java`) recebem as requisições do usuário, acionam a lógica de negócio nos Services e Models, e selecionam a View apropriada para retornar a resposta.
+
+Service: Esta é uma adição crucial ao MVC tradicional. As classes no pacote ` ...service` (ex: ` EventoService.java`, ` PedidoService.java`) contêm a lógica de negócio da aplicação. Elas são responsáveis por validar dados, aplicar regras, orquestrar operações com um ou mais repositórios e garantir a integridade do sistema.
 
 1. Spring Boot e Maven: A Base do Projeto
    
