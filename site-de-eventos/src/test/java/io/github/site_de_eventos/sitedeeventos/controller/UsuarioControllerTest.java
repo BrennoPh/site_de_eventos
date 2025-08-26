@@ -79,4 +79,60 @@ class UsuarioControllerTest {
                         .param("nome", "Teste")
                         .param("email", "teste@email.com"))
                 .andExpect(status().isOk())
-                .andExpect(
+                .andExpect(view().name("login"))
+                .andExpect(model().attributeExists("sucesso"));
+    }
+
+    /**
+     * Testa o processo de login para um usuário existente e válido.
+     * Verifica se, após um POST para "/login" com credenciais corretas,
+     * o usuário é redirecionado para a página inicial ("/").
+     *
+     * @throws Exception se ocorrer um erro durante a requisição.
+     */
+    @Test
+    void processarLogin_usuarioExistente_shouldRedirectIndex() throws Exception {
+        Usuario u = new Usuario();
+        when(usuarioService.autenticar("teste@email.com")).thenReturn(Optional.of(u));
+
+        mockMvc.perform(post("/login")
+                        .param("email", "teste@email.com"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+    }
+
+    /**
+     * Testa o processo de login para um usuário não existente.
+     * Verifica se a tentativa de login com um e-mail inválido retorna
+     * para a view "login" com uma mensagem de erro no modelo.
+     *
+     * @throws Exception se ocorrer um erro durante a requisição.
+     */
+    @Test
+    void processarLogin_usuarioNaoEncontrado_shouldReturnLoginView() throws Exception {
+        when(usuarioService.autenticar("naoexiste@email.com")).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/login")
+                        .param("email", "naoexiste@email.com"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"))
+                .andExpect(model().attributeExists("erro"));
+    }
+
+    /**
+     * Testa o processo de logout do usuário.
+     * Simula uma sessão ativa e verifica se a requisição GET para "/logout"
+     * invalida a sessão e redireciona o usuário para a página inicial.
+     *
+     * @throws Exception se ocorrer um erro durante a requisição.
+     */
+    @Test
+    void processarLogout_shouldInvalidateSessionAndRedirect() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("usuarioLogado", new Usuario());
+
+        mockMvc.perform(get("/logout").session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+    }
+}
