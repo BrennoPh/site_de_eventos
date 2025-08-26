@@ -28,9 +28,10 @@
             <nav class="header-nav" style="display: flex; gap: 1.5rem; align-items: center; white-space: nowrap;">
                 <a th:if="${session.usuarioLogado instanceof T(io.github.site_de_eventos.sitedeeventos.model.Organizador)}"
                     href="/eventos/novo" style="color: var(--white); text-decoration: none;">Criar Evento</a>
-                
+
                 <a th:if="${session.usuarioLogado instanceof T(io.github.site_de_eventos.sitedeeventos.model.Organizador)}"
-                    href="/meus-eventos-organizados" style="color: var(--white); text-decoration: none;">Meus Eventos</a>
+                    href="/meus-eventos-organizados" style="color: var(--white); text-decoration: none;">Meus
+                    Eventos</a>
 
                 <a th:if="${session.usuarioLogado != null}" href="/meus-eventos"
                     style="color: var(--white); text-decoration: none;">Meus Ingressos</a>
@@ -90,15 +91,26 @@
                             <div class="tag" th:text="${evento.categoria}">Categoria</div>
                         </div>
                         <div class="card-actions">
-                            <a th:href="@{/evento/{id}(id=${evento.idEvento})}" class="btn-muted" style="text-decoration: none;">Detalhes</a>
+                            <a th:href="@{/evento/{id}(id=${evento.idEvento})}" class="btn-muted"
+                                style="text-decoration: none;">Detalhes</a>
 
                             <th:block th:switch="${evento.status}">
                                 <div th:case="'CANCELADO'">
-                                    <button class="btn-muted" disabled style="cursor: not-allowed; background-color: #c0392b; color: white;">Cancelado</button>
+                                    <button class="btn-muted" disabled
+                                        style="cursor: not-allowed; background-color: #c0392b; color: white;">Cancelado</button>
                                 </div>
 
                                 <div th:case="'ATIVO'">
-                                    <a th:if="${evento.ingressosDisponiveis > 0}" th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}" class="btn-accent" style="text-decoration: none;">Ingressos</a>
+                                    <th:block th:if="${evento.ingressosDisponiveis > 0}">
+                                        <a th:if="${session.usuarioLogado != null}"
+                                           th:href="@{/pedidos/evento/{id}(id=${evento.idEvento})}"
+                                           class="btn-accent" style="text-decoration: none;">Ingressos</a>
+                                
+                                        <a th:if="${session.usuarioLogado == null}"
+                                           th:href="@{/login}"
+                                           class="btn-accent" style="text-decoration: none;">Ingressos</a>
+                                    </th:block>
+                                    
                                     <button th:if="${evento.ingressosDisponiveis <= 0}" class="btn-muted" disabled style="cursor: not-allowed;">Esgotado</button>
                                 </div>
                             </th:block>
