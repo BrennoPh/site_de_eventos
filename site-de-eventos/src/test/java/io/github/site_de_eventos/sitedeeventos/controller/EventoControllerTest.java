@@ -18,15 +18,43 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import io.github.site_de_eventos.sitedeeventos.model.Evento;
 import io.github.site_de_eventos.sitedeeventos.service.EventoService;
 
+/**
+ * Classe de teste para o {@link EventoController}.
+ * <p>
+ * Focada em testar a camada web (MVC) de forma isolada, utilizando
+ * {@code @WebMvcTest}. As dependências de serviço são mockadas com
+ * {@code @MockBean} para garantir que apenas o controller seja testado.
+ *
+ * @author Brenno P. S. Santos, Sibele C. Oliveira, Silas S. Santos
+ * @version 1.0
+ * @since 25-08-2025
+ */
 @WebMvcTest(EventoController.class)
 class EventoControllerTest {
 
+    /**
+     * Instância do MockMvc, injetada pelo Spring Test, para simular
+     * requisições HTTP para os endpoints do controller sem a necessidade
+     * de um servidor web real.
+     */
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * Cria um mock do {@link EventoService} no contexto da aplicação.
+     * Isso permite definir o comportamento esperado do serviço durante os testes
+     * do controller, isolando-o da lógica de negócio.
+     */
     @MockBean
     private EventoService eventoService;
 
+    /**
+     * Testa o endpoint da página inicial ("/").
+     * Verifica se o controller retorna o status HTTP 200 (OK), renderiza a view "index"
+     * e adiciona um atributo chamado "eventos" ao modelo.
+     *
+     * @throws Exception se ocorrer um erro durante a performance da requisição.
+     */
     @Test
     void index_shouldReturnIndexWithEventos() throws Exception {
         when(eventoService.buscarTodos()).thenReturn(Arrays.asList(new Evento()));
@@ -37,6 +65,13 @@ class EventoControllerTest {
                 .andExpect(model().attributeExists("eventos"));
     }
 
+    /**
+     * Testa o endpoint de exibição de detalhes de um evento ("/evento/{id}").
+     * Simula o caso em que o evento é encontrado e verifica se o controller
+     * retorna o status OK, a view "detalhes-evento" e o atributo "evento" no modelo.
+     *
+     * @throws Exception se ocorrer um erro durante a performance da requisição.
+     */
     @Test
     void exibirDetalhesEvento_found_shouldReturnViewWithEvento() throws Exception {
         Evento evento = new Evento();
@@ -49,6 +84,12 @@ class EventoControllerTest {
                 .andExpect(model().attributeExists("evento"));
     }
 
+    /**
+     * Testa o endpoint da API que retorna a lista de eventos em formato JSON ("/api/eventos").
+     * Verifica se a resposta tem o status OK e se o corpo da resposta é um array JSON.
+     *
+     * @throws Exception se ocorrer um erro durante a performance da requisição.
+     */
     @Test
     void getEventosParaMapa_shouldReturnJson() throws Exception {
         when(eventoService.buscarTodos()).thenReturn(Arrays.asList(new Evento()));
