@@ -137,6 +137,6 @@ As interfaces são um pilar fundamental do projeto, pois definem que as classes 
 
 
 👨‍💻 Equipe Responsável
-EQUIPE RESPONSÁVEL: Brenno Phelipe Silva dos Santos, Sibele Oliveira Cruz e Silas Santos da Silva.
+Brenno Phelipe Silva dos Santos, Sibele Oliveira Cruz e Silas Santos da Silva.
 
 Observação: Esse projeto trata-se de um atividade acadêmica realizada pelos alunos supracitados do Departamento de Computação (DCOMP) da Universidade Federal de Sergipe para a disciplina de Programação Orientada a Objetos, ministrada pelo Professor Kalil Bispo, no período de 2025.1.
