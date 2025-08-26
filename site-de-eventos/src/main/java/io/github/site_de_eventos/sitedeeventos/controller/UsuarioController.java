@@ -29,8 +29,9 @@ public class UsuarioController {
      * Exibe o formulário de cadastro de usuário.
      */
     @GetMapping("/cadastro")
-    public String exibirFormularioCadastro() {
-    	return "cadastro";
+    public String exibirFormularioCadastro(Model model) { 
+    model.addAttribute("dataMaxima", LocalDate.now().toString()); 
+    return "cadastro";
     }
 
     /**
@@ -121,4 +122,5 @@ public class UsuarioController {
     	// Redireciona o usuário para a página principal, agora como um visitante.
     	return "redirect:/";
     }
+
 }
