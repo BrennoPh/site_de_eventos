@@ -17,19 +17,59 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger; // Importar
 
+/**
+ * Classe de serviço responsável pela lógica de negócio relacionada a Pedidos.
+ * <p>
+ * Gerencia a criação, confirmação e cancelamento de pedidos, aplicando regras
+ * de negócio como validação de ingressos, cálculo de preços com estratégias
+ * (Strategy Pattern) e atualização do estado das entidades envolvidas.
+ *
+ * @author Brenno P. S. Santos, Sibele C. Oliveira, Silas S. Santos
+ * @version 1.0
+ * @since 25-08-2025
+ */
 @Service
 public class PedidoService {
 
     private final UsuarioRepository usuarioRepository;
     private final EventoRepository eventoRepository;
-    private static final AtomicInteger pedidoIdGenerator = new AtomicInteger(0); 
+    /**
+     * Gerador de IDs para pedidos, garantindo unicidade de forma thread-safe.
+     */
+    private static final AtomicInteger pedidoIdGenerator = new AtomicInteger(0);
 
 
+    /**
+     * Construtor para injeção de dependências dos repositórios.
+     *
+     * @param usuarioRepository O repositório para acesso aos dados de usuários.
+     * @param eventoRepository  O repositório para acesso aos dados de eventos.
+     */
     public PedidoService(UsuarioRepository usuarioRepository, EventoRepository eventoRepository) {
         this.usuarioRepository = usuarioRepository;
         this.eventoRepository = eventoRepository;
     }
 
+    /**
+     * Cria um novo pedido para um usuário e evento específicos.
+     * <p>
+     * Este método orquestra todo o processo de criação de um pedido, incluindo:
+     * <ul>
+     * <li>Validação da existência do usuário e do evento.</li>
+     * <li>Verificação da disponibilidade de ingressos.</li>
+     * <li>Cálculo do valor total, aplicando o padrão Strategy para descontos e taxas.</li>
+     * <li>Criação dos ingressos associados.</li>
+     * <li>Persistência das alterações no banco de dados.</li>
+     * </ul>
+     *
+     * @param usuarioId O ID do usuário que está realizando a compra.
+     * @param eventoId  O ID do evento para o qual os ingressos estão sendo comprados.
+     * @param nomes     A lista de nomes dos participantes, um para cada ingresso.
+     * @param emails    A lista de e-mails dos participantes, uma para cada ingresso.
+     * @param cupomCode O código do cupom de desconto a ser aplicado (pode ser nulo).
+     * @return O objeto {@link Pedido} criado e persistido.
+     * @throws RuntimeException Se o usuário, evento não forem encontrados ou se não houver ingressos suficientes.
+     */
     public Pedido criarPedido(int usuarioId, int eventoId, List<String> nomes, List<String> emails, String cupomCode) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + usuarioId));
@@ -47,9 +87,9 @@ public class PedidoService {
         // 1. Define o valor base (preço original * quantidade).
         double valorBase = evento.getPreco() * quantidade;
         pedido.setValorBase(valorBase);
-        
+
         // --- INÍCIO DO CÁLCULO COM STRATEGY ---
-        
+
         // Inicializa o valor final com o valor base. Ele será modificado pelas estratégias.
         double valorFinal = valorBase;
 
@@ -57,40 +97,51 @@ public class PedidoService {
         if (cupomCode != null && !cupomCode.isEmpty() && cupomCode.equalsIgnoreCase(evento.getCupomCode())) {
             // Instancia a estratégia de desconto com o valor de desconto do evento.
             ICalculoPrecoPedidoStrategy cupomStrategy = new CalculoComCupomDesconto(evento.getCupomDiscountValue());
-            
+
             // Cria um pedido temporário para o cálculo, para não modificar o valor base do pedido real.
             Pedido pedidoParaCalculo = new Pedido();
             pedidoParaCalculo.setValorBase(valorFinal); // O valor base para o cálculo é o valor atual.
-            
+
             // Calcula o novo valor final aplicando o desconto.
             valorFinal = cupomStrategy.calcularPreco(pedidoParaCalculo);
         }
 
         // 3. Aplica a ESTRATÉGIA de taxa de serviço sobre o valor (já com o possível desconto).
         ICalculoPrecoPedidoStrategy taxaStrategy = new CalculoComTaxaServico();
-        
+
         // Usa-se outro pedido temporário para o cálculo da taxa.
         Pedido pedidoParaCalculo = new Pedido();
         pedidoParaCalculo.setValorBase(valorFinal); // O valor base para este cálculo é o valor após o desconto.
-        
+
         // Calcula o valor final definitivo aplicando a taxa.
         valorFinal = taxaStrategy.calcularPreco(pedidoParaCalculo);
 
         // 4. ETAPA CRUCIAL: Define o valor total calculado no objeto de pedido principal.
         pedido.setValorTotal(valorFinal);
-        
+
         confirmarPedido(pedido, nomes, emails);
         usuario.adicionarPedido(pedido);
         usuarioRepository.save(usuario);
 
         return pedido;
     }
-    
+
+    /**
+     * Método auxiliar privado para finalizar a confirmação de um pedido.
+     * <p>
+     * Responsável por decrementar a quantidade de ingressos disponíveis do evento,
+     * gerar os ingressos individuais para cada participante, associá-los ao pedido
+     * e definir o status final do pedido como "CONCLUIDO".
+     *
+     * @param pedido O pedido que está sendo confirmado.
+     * @param nomes  A lista de nomes dos participantes.
+     * @param emails A lista de e-mails dos participantes.
+     */
     // MÉTODO ATUALIZADO
     private void confirmarPedido(Pedido pedido, List<String> nomes, List<String> emails) {
         Evento evento = pedido.getEvento();
         int quantidadeComprada = pedido.getQuantidadeIngressos();
-        
+
         int primeiroIngressoNum = evento.getCapacidade() - evento.getIngressosDisponiveis() + 1;
         evento.setIngressosDisponiveis(evento.getIngressosDisponiveis() - quantidadeComprada);
         eventoRepository.save(evento);
@@ -98,18 +149,18 @@ public class PedidoService {
         List<Ingresso> ingressosComprados = new ArrayList<>();
         for (int i = 0; i < quantidadeComprada; i++) {
             String novoIdIngresso = evento.getIdEvento() + "-" + (primeiroIngressoNum + i);
-            
+
             // Usa os nomes e e-mails da lista para criar cada ingresso
-            Ingresso novoIngresso = new Ingresso(novoIdIngresso, evento.getIdEvento(), 
-                nomes.get(i), emails.get(i), LocalDateTime.now(), evento.getPreco());
-            
+            Ingresso novoIngresso = new Ingresso(novoIdIngresso, evento.getIdEvento(),
+                    nomes.get(i), emails.get(i), LocalDateTime.now(), evento.getPreco());
+
             novoIngresso.setPedido(pedido); // Associa o ingresso ao pedido
             ingressosComprados.add(novoIngresso);
         }
         pedido.setIngressos(ingressosComprados);
         pedido.setStatus("CONCLUIDO");
     }
-    
+
     /**
      * Cancela um pedido específico de um usuário.
      * <p>
@@ -126,14 +177,14 @@ public class PedidoService {
     public void cancelarPedido(int usuarioId, int pedidoId) {
         // Busca o usuário no repositório. Se não encontrar, lança uma exceção.
         Usuario usuario = usuarioRepository.findById(usuarioId)
-            .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + usuarioId));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com ID: " + usuarioId));
 
         // Procura na lista de pedidos do usuário aquele que corresponde ao ID fornecido.
         Pedido pedidoParaCancelar = usuario.getPedidos().stream() // Converte a lista para um Stream para usar a API de coleções.
-            .filter(p -> p.getIdPedido() == pedidoId) // Filtra a lista, mantendo apenas o pedido com o ID correto.
-            .findFirst() // Pega o primeiro (e único) resultado.
-            .orElseThrow(() -> new RuntimeException("Pedido não encontrado ou não pertence a este usuário.")); // Se não encontrar, lança exceção.
-        
+                .filter(p -> p.getIdPedido() == pedidoId) // Filtra a lista, mantendo apenas o pedido com o ID correto.
+                .findFirst() // Pega o primeiro (e único) resultado.
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado ou não pertence a este usuário.")); // Se não encontrar, lança exceção.
+
         // --- VALIDAÇÃO DE STATUS DO PEDIDO ---
         // Regra de negócio: Garante que apenas pedidos com status "CONCLUIDO" podem ser cancelados pelo usuário.
         if (!"CONCLUIDO".equals(pedidoParaCancelar.getStatus())) {
@@ -143,7 +194,7 @@ public class PedidoService {
 
         // Busca o evento associado ao pedido que será cancelado.
         Evento evento = eventoRepository.findById(pedidoParaCancelar.getEvento().getIdEvento())
-            .orElseThrow(() -> new RuntimeException("Evento associado ao pedido não foi encontrado."));
+                .orElseThrow(() -> new RuntimeException("Evento associado ao pedido não foi encontrado."));
 
         // Regra de negócio: Impede o cancelamento se o evento em si já foi cancelado pelo organizador.
         if ("CANCELADO".equals(evento.getStatus())) {
