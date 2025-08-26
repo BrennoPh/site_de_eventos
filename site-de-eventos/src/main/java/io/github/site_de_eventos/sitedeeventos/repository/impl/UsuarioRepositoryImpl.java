@@ -1,5 +1,19 @@
 package io.github.site_de_eventos.sitedeeventos.repository.impl;
 
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import io.github.site_de_eventos.sitedeeventos.model.OrganizadorBuilderConcreto;
+import io.github.site_de_eventos.sitedeeventos.model.Pedido;
+import io.github.site_de_eventos.sitedeeventos.model.Usuario;
+import io.github.site_de_eventos.sitedeeventos.model.UsuarioBuilderConcreto;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IOrganizadorBuilder;
+import io.github.site_de_eventos.sitedeeventos.model.builder.IUsuarioBuilder;
+import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
+import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Repository;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -16,30 +30,15 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.springframework.stereotype.Repository;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-
-import io.github.site_de_eventos.sitedeeventos.model.OrganizadorBuilderConcreto;
-import io.github.site_de_eventos.sitedeeventos.model.Pedido;
-import io.github.site_de_eventos.sitedeeventos.model.Usuario;
-import io.github.site_de_eventos.sitedeeventos.model.UsuarioBuilderConcreto;
-import io.github.site_de_eventos.sitedeeventos.model.builder.IOrganizadorBuilder;
-import io.github.site_de_eventos.sitedeeventos.model.builder.IUsuarioBuilder;
-import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
-import jakarta.annotation.PostConstruct;
-
+/**
+ * Implementação do {@link UsuarioRepository} que persiste os dados dos usuários em um arquivo JSON.
+ * Gerencia os dados em memória para acesso rápido e sincroniza com "usuarios.json" para persistência.
+ * Utiliza um {@link UsuarioTypeAdapter} customizado para lidar com a herança entre Usuário e Organizador.
+ *
+ * @author Brenno P. S. Santos, Sibele C. Oliveira, Silas S. Santos
+ * @version 1.0
+ * @since 25-08-2025
+ */
 @Repository
 public class UsuarioRepositoryImpl implements UsuarioRepository {
 
@@ -47,24 +46,18 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     private final AtomicInteger idGenerator = new AtomicInteger(0);
     private static final String FILE_NAME = "usuarios.json";
 
+    // Instância do Gson configurada para serialização e desserialização.
     private final Gson gson = new GsonBuilder()
     	.excludeFieldsWithoutExposeAnnotation() 
     	.registerTypeAdapter(LocalDateTime.class, new TypeAdapter<LocalDateTime>() {
     	    @Override
     	    public void write(JsonWriter out, LocalDateTime value) throws IOException {
-    	        if (value == null) {
-    	            out.nullValue(); 
-    	            return;
-    	        }
-    
+    	        if (value == null) { out.nullValue(); return; }
     	        out.value(value.toString());
     	    }
     	    @Override
     	    public LocalDateTime read(JsonReader in) throws IOException {
-    	        if (in.peek() == com.google.gson.stream.JsonToken.NULL) {
-    	            in.nextNull();
-    	            return null; 
-    	        }
+    	        if (in.peek() == com.google.gson.stream.JsonToken.NULL) { in.nextNull(); return null; }
     	        return LocalDateTime.parse(in.nextString());
     	    }
     	})
@@ -72,11 +65,18 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         .setPrettyPrinting()
         .create();
 
+    /**
+     * Carrega os dados do arquivo JSON para a memória na inicialização do repositório.
+     */
     @PostConstruct
     public void init() {
         loadDataFromFile();
     }
 
+    /**
+     * Se o ID do usuário for 0, gera um novo ID antes de salvar no mapa em memória e
+     * persistir a alteração no arquivo JSON.
+     */
     @Override
     public Usuario save(Usuario usuario) {
         if (usuario.getIdUsuario() == 0) {
@@ -88,11 +88,18 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         return usuario;
     }
 
+    /**
+     * Busca um usuário diretamente no mapa em memória pelo seu ID.
+     */
     @Override
     public Optional<Usuario> findById(int id) {
         return Optional.ofNullable(database.get(id));
     }
 
+    /**
+     * Busca na coleção de usuários em memória o primeiro que corresponde ao e-mail fornecido,
+     * ignorando diferenças de maiúsculas e minúsculas.
+     */
     @Override
     public Optional<Usuario> findByEmail(String email) {
         return database.values().stream()
@@ -100,11 +107,18 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
                 .findFirst();
     }
 
+    /**
+     * Retorna uma nova lista contendo todos os usuários para evitar modificações externas na base de dados interna.
+     */
     @Override
     public List<Usuario> findAll() {
         return new ArrayList<>(database.values());
     }
 
+    /**
+     * Remove o usuário do mapa em memória e, se a operação for bem-sucedida,
+     * atualiza o arquivo JSON para refletir a remoção.
+     */
     @Override
     public boolean deleteById(int id) {
         boolean removed = database.remove(id) != null;
@@ -114,6 +128,9 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         return removed;
     }
 
+    /**
+     * Salva a lista atual de usuários do mapa em memória para o arquivo "usuarios.json".
+     */
     private void saveDataToFile() {
         try (Writer writer = Files.newBufferedWriter(Paths.get(FILE_NAME))) {
             gson.toJson(new ArrayList<>(database.values()), writer);
@@ -122,6 +139,10 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         }
     }
 
+    /**
+     * Carrega os usuários do arquivo "usuarios.json" para o mapa em memória na inicialização.
+     * Também atualiza o contador de IDs para o maior valor encontrado no arquivo.
+     */
     private void loadDataFromFile() {
         File file = new File(FILE_NAME);
         if (!file.exists() || file.length() == 0) return;
@@ -144,11 +165,15 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     }
 }
 
+/**
+ * Desserializador customizado para o Gson, responsável por instanciar a classe correta
+ * ({@link Usuario} ou {@link io.github.site_de_eventos.sitedeeventos.model.Organizador})
+ * ao ler o JSON, com base na presença do campo "cnpj".
+ */
 class UsuarioTypeAdapter implements JsonDeserializer<Usuario> {
     @Override
     public Usuario deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
-
         Type pedidoListType = new TypeToken<ArrayList<Pedido>>() {}.getType();
 
         List<Pedido> pedidos = Collections.emptyList(); 
@@ -157,6 +182,7 @@ class UsuarioTypeAdapter implements JsonDeserializer<Usuario> {
             pedidos = context.deserialize(pedidosArray, pedidoListType);
         }
 
+        // Se o objeto JSON tiver a propriedade "cnpj", ele é tratado como um Organizador.
         if (jsonObject.has("cnpj")) {
             IOrganizadorBuilder builder = new OrganizadorBuilderConcreto();
             ((OrganizadorBuilderConcreto) builder.idUsuario(jsonObject.get("idUsuario").getAsInt())
@@ -167,7 +193,7 @@ class UsuarioTypeAdapter implements JsonDeserializer<Usuario> {
                    .cnpj(jsonObject.has("cnpj") ? jsonObject.get("cnpj").getAsString() : null)
                    .contaBancaria(jsonObject.has("contaBancaria") ? jsonObject.get("contaBancaria").getAsString() : null); 
             return builder.build();
-        } else {
+        } else { // Caso contrário, é um Usuário padrão.
             IUsuarioBuilder builder = new UsuarioBuilderConcreto();
             builder.idUsuario(jsonObject.get("idUsuario").getAsInt())
                    .nome(jsonObject.has("nome") ? jsonObject.get("nome").getAsString() : null)
