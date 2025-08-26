@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -123,6 +124,121 @@ public class EventoController {
         return "redirect:/";
     }
 
+    
+    /**
+     * Exibe a página com o mapa de eventos.
+     */
+    @GetMapping("/mapa")
+    public String exibirMapa(Model model) {
+        // Adiciona a chave da API do Google Maps para o frontend.
+        model.addAttribute("googleMapsApiKey", "SUA_CHAVE_API_AQUI");
+        // Renderiza a página do mapa.
+        return "mapa";
+    }
+
+    /**
+     * Exibe a página "Meus Eventos", que lista os pedidos do usuário logado.
+     */
+    @GetMapping("/meus-eventos")
+    public String exibirMeusEventos(HttpSession session, Model model) {
+        // Pega o objeto do usuário da sessão.
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        // Verifica se o usuário está logado e se a lista de pedidos não é nula.
+        if (usuarioLogado != null && usuarioLogado.getPedidos() != null) {
+            // Se sim, adiciona a lista de pedidos ao 'Model'.
+            model.addAttribute("pedidos", usuarioLogado.getPedidos());
+        } else {
+            // Caso contrário, adiciona uma lista vazia para evitar erros na view.
+            model.addAttribute("pedidos", Collections.emptyList());
+        }
+        // Renderiza a página "meus-eventos".
+        return "meus-eventos";
+    }
+
+    /**
+     * Exibe a página de detalhes de um evento específico.
+     */
+    @GetMapping("/evento/{id}")
+    public String exibirDetalhesEvento(@PathVariable("id") int id, Model model) {
+        // Busca o evento pelo ID; o retorno é um Optional para tratar o caso de não
+        // encontrar.
+        Optional<Evento> eventoOpt = eventoService.buscarPorId(id);
+        // Se o evento foi encontrado...
+        if (eventoOpt.isPresent()) {
+            // Adiciona o objeto Evento ao 'Model'.
+            model.addAttribute("evento", eventoOpt.get());
+        } else {
+            // Se não, adiciona null (a view precisa tratar este caso).
+            model.addAttribute("evento", null);
+        }
+        // Renderiza a página de detalhes do evento.
+        return "detalhes-evento";
+    }
+
+    /**
+     * Endpoint de API que retorna todos os eventos em formato JSON.
+     */
+    @GetMapping("/api/eventos")
+    @ResponseBody // Indica que o retorno do método é o corpo da resposta, não o nome de uma view.
+    public List<Evento> getEventosParaMapa() {
+        // Retorna a lista de eventos, que o Spring automaticamente converte para JSON.
+        return eventoService.buscarTodos();
+    }
+
+    /**
+     * Exibe a página com os eventos criados pelo organizador logado.
+     */
+    @GetMapping("/meus-eventos-organizados")
+    public String exibirMeusEventosOrganizados(HttpSession session, Model model) {
+        // Pega o usuário da sessão.
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+
+        // Verifica se o usuário logado NÃO é um organizador.
+        if (!(usuarioLogado instanceof Organizador)) {
+            // Se não for, redireciona para a página inicial, pois não tem permissão.
+            return "redirect:/";
+        }
+        // Converte o usuário para o tipo Organizador.
+        Organizador organizador = (Organizador) usuarioLogado;
+        // Busca no serviço todos os eventos associados a este organizador.
+        List<Evento> meusEventos = eventoService.buscarPorOrganizador(organizador);
+        // Adiciona a lista encontrada ao 'Model'.
+        model.addAttribute("eventosOrganizados", meusEventos);
+        // Renderiza a página correspondente.
+        return "meus-eventos-organizados";
+    }
     // ... (demais métodos já comentados anteriormente) ...
 
+    /**
+     * Processa a solicitação de cancelamento de um evento por seu organizador.
+     */
+    @PostMapping("/eventos/{id}/cancelar") // Mapeia requisições POST para esta URL com ID variável.
+    public String cancelarEvento(@PathVariable("id") int eventoId, HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        // Pega o usuário logado da sessão.
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+
+        // Medida de segurança: verifica se o usuário é um organizador.
+        if (!(usuarioLogado instanceof Organizador)) {
+            // Se não for, adiciona uma mensagem de erro e redireciona.
+            redirectAttributes.addFlashAttribute("erro", "Acesso negado.");
+            return "redirect:/";
+        }
+        try {
+            // Tenta cancelar o evento através do serviço, passando o ID do evento e o
+            // organizador.
+            eventoService.cancelarEvento(eventoId, (Organizador) usuarioLogado);
+            // Se tiver sucesso, adiciona uma mensagem de sucesso para ser exibida após o
+            // redirecionamento.
+            redirectAttributes.addFlashAttribute("sucesso", "Evento cancelado com sucesso!");
+        } catch (Exception e) {
+            // Se ocorrer um erro (ex: não é o dono do evento), captura a exceção.
+            // Adiciona a mensagem de erro da exceção para ser exibida na próxima página.
+            redirectAttributes.addFlashAttribute("erro", "Erro ao cancelar evento: " + e.getMessage());
+        }
+
+        // Redireciona de volta para a lista de eventos organizados.
+        return "redirect:/meus-eventos-organizados";
+    }
 }
+
