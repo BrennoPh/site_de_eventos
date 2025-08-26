@@ -28,6 +28,16 @@ import io.github.site_de_eventos.sitedeeventos.model.Evento;
 import io.github.site_de_eventos.sitedeeventos.repository.EventoRepository;
 import jakarta.annotation.PostConstruct;
 
+/**
+ * Implementação do {@link EventoRepository} que utiliza um arquivo JSON como meio de persistência.
+ * <p>
+ * Esta classe gerencia uma coleção de eventos em memória e sincroniza os dados com um arquivo "eventos.json".
+ * É marcada como um {@code @Repository} para ser gerenciada pelo contêiner do Spring.
+ *
+ * @author Brenno P. S. Santos, Sibele C. Oliveira, Silas S. Santos
+ * @version 1.0
+ * @since 25-08-2025
+ */
 @Repository
 public class EventoArquivoRepository implements EventoRepository {
 
@@ -44,7 +54,6 @@ public class EventoArquivoRepository implements EventoRepository {
     	            out.nullValue();
     	            return;
     	        }
-
     	        out.value(value.toString());
     	    }
     	    @Override
@@ -59,6 +68,10 @@ public class EventoArquivoRepository implements EventoRepository {
         .setPrettyPrinting()
         .create();
 
+    /**
+     * Inicializa o repositório carregando os dados do arquivo JSON na memória
+     * assim que a aplicação é iniciada, graças à anotação {@code @PostConstruct}.
+     */
     @PostConstruct
     private void init() {
         loadDataFromFile();
@@ -86,20 +99,18 @@ public class EventoArquivoRepository implements EventoRepository {
                 .filter(evento -> evento.getNomeEvento().equalsIgnoreCase(nome))
                 .findFirst();
     }
+    
     @Override
     public List<Evento> findByNomeContaining(String termo) {
-    // Se a busca for nula ou vazia, retorna todos os eventos.
-            if (termo == null || termo.trim().isEmpty()) {
-                return findAll();
-            }
-            // Converte o termo de busca para minúsculas para uma comparação case-insensitive.
-            String termoLowerCase = termo.toLowerCase();
-            
-            // Filtra a lista de eventos na memória.
-            return database.values().stream()
-                    .filter(evento -> evento.getNomeEvento().toLowerCase().contains(termoLowerCase))
-                    .collect(Collectors.toList());
+        if (termo == null || termo.trim().isEmpty()) {
+            return findAll();
         }
+        String termoLowerCase = termo.toLowerCase();
+        
+        return database.values().stream()
+                .filter(evento -> evento.getNomeEvento().toLowerCase().contains(termoLowerCase))
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<Evento> findAll() {
@@ -115,6 +126,10 @@ public class EventoArquivoRepository implements EventoRepository {
         return removed;
     }
 
+    /**
+     * Método privado para persistir o estado atual do banco de dados em memória para o arquivo JSON.
+     * É chamado após qualquer operação de modificação (save, delete).
+     */
     private void saveDataToFile() {
         try (Writer writer = Files.newBufferedWriter(Paths.get(FILE_NAME))) {
             gson.toJson(new ArrayList<>(database.values()), writer);
@@ -123,6 +138,10 @@ public class EventoArquivoRepository implements EventoRepository {
         }
     }
 
+    /**
+     * Método privado que carrega os dados do arquivo JSON para o banco de dados em memória.
+     * É chamado na inicialização do repositório. Se o arquivo não existir ou estiver vazio, nada é feito.
+     */
     private void loadDataFromFile() {
         File file = new File(FILE_NAME);
         if (!file.exists() || file.length() == 0) return;
