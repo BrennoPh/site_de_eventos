@@ -44,6 +44,10 @@ public class PedidoController {
     @GetMapping("/pedidos/evento/{id}")
     public String exibirPaginaPedido(@PathVariable("id") int id, Model model, HttpSession session) {
         Optional<Evento> eventoOpt = eventoService.buscarPorId(id);
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
         if (eventoOpt.isPresent()) {
             model.addAttribute("evento", eventoOpt.get());
             return "pedido"; // Página que mostra detalhes e permite escolher a quantidade.
