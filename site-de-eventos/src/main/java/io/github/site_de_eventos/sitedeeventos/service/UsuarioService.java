@@ -1,5 +1,6 @@
 package io.github.site_de_eventos.sitedeeventos.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -133,6 +134,15 @@ public class UsuarioService {
 
         if (!isEmailValido(email)) {
             throw new RuntimeException("Erro: E-mail inválido.");
+        }
+        if (dataNascimento != null) {
+            if (dataNascimento.toLocalDate().isAfter(LocalDate.now().minusYears(18))) {
+                throw new RuntimeException("É necessário ter no mínimo 18 anos para se cadastrar.");
+            } else if(dataNascimento.toLocalDate().isBefore(LocalDate.now().minusYears(117))) {
+            	 throw new RuntimeException("Você não é tão velho assim Kalil");
+            }
+        } else {
+            throw new RuntimeException("A data de nascimento é obrigatória.");
         }
 
         if (isOrganizador) {
