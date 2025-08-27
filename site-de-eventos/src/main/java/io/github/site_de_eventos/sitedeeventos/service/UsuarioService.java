@@ -146,6 +146,9 @@ public class UsuarioService {
         }
 
         if (isOrganizador) {
+            if (contaBancaria == null || !contaBancaria.matches("^[0-9\\-]+$") || contaBancaria.length() < 3) {
+                throw new RuntimeException("Formato de conta bancária inválido. Use apenas números e hífen.");
+            }
             IOrganizadorBuilder builder = new OrganizadorBuilderConcreto();
             Organizador novoOrganizador = ((OrganizadorBuilderConcreto) builder
                     .nome(nome)
