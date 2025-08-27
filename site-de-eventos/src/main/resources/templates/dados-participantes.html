@@ -12,7 +12,9 @@
 
         <form action="/pedidos/confirmar" method="POST">
             <input type="hidden" name="eventoId" th:value="${evento.idEvento}" />
-            
+			<input type="hidden" name="cupomCode" th:value="${cupomCode}" />
+			
+			
             <div th:each="i : ${#numbers.sequence(1, quantidade)}">
                 <h3 th:text="|Ingresso ${i}|" style="border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; margin-top: 2.5rem;"></h3>
                 <div class="form-group">
@@ -26,11 +28,6 @@
             </div>
 
             <hr style="border-color: var(--border); margin: 2rem 0;">
-
-            <div class="form-group">
-                <label for="cupomCode">Cupom de Desconto (Opcional)</label>
-                <input type="text" id="cupomCode" name="cupomCode" placeholder="Digite seu cupom aqui">
-            </div>
 
             <button type="submit" class="btn-accent" style="width:100%; margin-top: 1rem;">
                 Finalizar Compra

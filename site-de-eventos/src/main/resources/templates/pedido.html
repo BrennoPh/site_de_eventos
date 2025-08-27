@@ -26,6 +26,11 @@
     <p class="big" style="text-align: center; margin: 1rem 0;">
         Preço por Ingresso: R$ <span th:text="${#numbers.formatDecimal(evento.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
     </p>
+	
+	<p class="big" style="text-align: center; margin: 1rem 0;">
+	        <strong th:text="|R$ ${#numbers.formatDecimal(evento.preco, 1, 'POINT', 2, 'COMMA')}|">0,00</strong>
+	        <small th:text="|( + R$ ${#numbers.formatDecimal(valorTaxaUnitario, 1, 'POINT', 2, 'COMMA')} de taxa)|" style="font-weight: normal; color: var(--muted);">(+ R$ 0,00 de taxa)</small>
+	</p>
 
     <form action="/pedidos" method="POST" style="margin-top: 2rem;">
         <input type="hidden" name="eventoId" th:value="${evento.idEvento}" />

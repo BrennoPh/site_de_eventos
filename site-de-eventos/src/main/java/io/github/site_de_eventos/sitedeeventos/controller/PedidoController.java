@@ -7,6 +7,9 @@ import io.github.site_de_eventos.sitedeeventos.model.Usuario;
 import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
 import io.github.site_de_eventos.sitedeeventos.service.EventoService;
 import io.github.site_de_eventos.sitedeeventos.service.PedidoService;
+import io.github.site_de_eventos.sitedeeventos.service.strategy.CalculoComTaxaServico;
+import io.github.site_de_eventos.sitedeeventos.service.strategy.ICalculoPrecoPedidoStrategy;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,14 +46,37 @@ public class PedidoController {
      */
     @GetMapping("/pedidos/evento/{id}")
     public String exibirPaginaPedido(@PathVariable("id") int id, Model model, HttpSession session) {
-        Optional<Evento> eventoOpt = eventoService.buscarPorId(id);
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
         if (usuarioLogado == null) {
             return "redirect:/login";
         }
+
+        Optional<Evento> eventoOpt = eventoService.buscarPorId(id);
         if (eventoOpt.isPresent()) {
-            model.addAttribute("evento", eventoOpt.get());
-            return "pedido"; // Página que mostra detalhes e permite escolher a quantidade.
+            Evento evento = eventoOpt.get();
+            model.addAttribute("evento", evento);
+
+
+            // 1. Calcula o valor base para UM ingresso.
+            double valorBaseUnitario = evento.getPreco();
+
+            // 2. Simula um pedido para usar a Strategy.
+            Pedido pedidoParaCalculo = new Pedido();
+            pedidoParaCalculo.setValorBase(valorBaseUnitario);
+
+            // 3. Instancia e aplica a estratégia de taxa de serviço.
+            ICalculoPrecoPedidoStrategy taxaStrategy = new CalculoComTaxaServico();
+            double valorTotalComTaxa = taxaStrategy.calcularPreco(pedidoParaCalculo);
+
+            // 4. Calcula o valor exato da taxa.
+            double valorTaxa = valorTotalComTaxa - valorBaseUnitario;
+
+            // 5. Adiciona os valores calculados ao Model para a view usar.
+            model.addAttribute("valorTaxaUnitario", valorTaxa);
+            model.addAttribute("valorTotalUnitarioComTaxa", valorTotalComTaxa);
+           
+
+            return "pedido"; 
         }
         return "redirect:/";
     }
@@ -59,10 +85,11 @@ public class PedidoController {
      * PASSO 1 (POST): Recebe a quantidade de ingressos e redireciona para o formulário de participantes.
      */
     @PostMapping("/pedidos")
-    public String iniciarPedido(@RequestParam int eventoId, @RequestParam int quantidade, RedirectAttributes redirectAttributes) {
+    public String iniciarPedido(@RequestParam int eventoId, @RequestParam int quantidade, @RequestParam(required = false) String cupomCode,RedirectAttributes redirectAttributes) {
         // Adiciona os parâmetros ao RedirectAttributes para que eles sejam passados na URL do redirecionamento.
         redirectAttributes.addAttribute("eventoId", eventoId);
         redirectAttributes.addAttribute("quantidade", quantidade);
+        redirectAttributes.addAttribute("cupomCode", cupomCode);
         // Redireciona para o endpoint que exibirá o formulário de dados dos participantes.
         return "redirect:/pedidos/participantes";
     }
@@ -71,11 +98,13 @@ public class PedidoController {
      * PASSO 1 (GET): Exibe o formulário para o usuário preencher os dados de cada participante/ingresso.
      */
     @GetMapping("/pedidos/participantes")
-    public String exibirFormularioParticipantes(@RequestParam int eventoId, @RequestParam int quantidade, Model model) {
+    public String exibirFormularioParticipantes(@RequestParam int eventoId, @RequestParam int quantidade, @RequestParam(required = false) String cupomCode, Model model) {
         // Busca o evento para exibir suas informações na página.
         model.addAttribute("evento", eventoService.buscarPorId(eventoId).get());
         // Passa a quantidade de ingressos para a view, para que ela possa renderizar o número correto de campos de formulário.
         model.addAttribute("quantidade", quantidade);
+        // Passa o cupom, se definido, para o view
+        model.addAttribute("cupomCode", cupomCode);
         // Renderiza a página "dados-participantes.html".
         return "dados-participantes";
     }
