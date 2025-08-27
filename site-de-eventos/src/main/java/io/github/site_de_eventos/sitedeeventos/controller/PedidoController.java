@@ -20,12 +20,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
  * Controlador responsável por gerenciar as requisições web relacionadas a Pedidos.
- * Lida com o fluxo de compra de ingressos em múltiplas etapas.
+ * Lida com o fluxo de compra de ingressos em múltiplas etapas, incluindo
+ * cálculo de preço, coleta de dados de participantes e página de confirmação.
  */
 @Controller
 public class PedidoController {
@@ -42,7 +46,8 @@ public class PedidoController {
     }
 
     /**
-     * Exibe a página de detalhes do evento, onde o usuário inicia a compra.
+     * Exibe a página inicial da compra, onde o usuário escolhe a quantidade de ingressos.
+     * Já calcula o preço inicial para 1 ingresso.
      */
     @GetMapping("/pedidos/evento/{id}")
     public String exibirPaginaPedido(@PathVariable("id") int id, Model model, HttpSession session) {
@@ -51,96 +56,137 @@ public class PedidoController {
             return "redirect:/login";
         }
 
-        Optional<Evento> eventoOpt = eventoService.buscarPorId(id);
-        if (eventoOpt.isPresent()) {
-            Evento evento = eventoOpt.get();
-            model.addAttribute("evento", evento);
+        Evento evento = eventoService.buscarPorId(id).orElseThrow(() -> new RuntimeException("Evento não encontrado"));
+        model.addAttribute("evento", evento);
 
+        // Chama o serviço e obtém o Map com os resultados
+        Map<String, Object> resumoMap = pedidoService.calcularPrecoPreview(evento, 1, "");
+        // Adiciona todos os itens do Map ao Model de uma só vez
+        model.addAllAttributes(resumoMap);
 
-            // 1. Calcula o valor base para UM ingresso.
-            double valorBaseUnitario = evento.getPreco();
-
-            // 2. Simula um pedido para usar a Strategy.
-            Pedido pedidoParaCalculo = new Pedido();
-            pedidoParaCalculo.setValorBase(valorBaseUnitario);
-
-            // 3. Instancia e aplica a estratégia de taxa de serviço.
-            ICalculoPrecoPedidoStrategy taxaStrategy = new CalculoComTaxaServico();
-            double valorTotalComTaxa = taxaStrategy.calcularPreco(pedidoParaCalculo);
-
-            // 4. Calcula o valor exato da taxa.
-            double valorTaxa = valorTotalComTaxa - valorBaseUnitario;
-
-            // 5. Adiciona os valores calculados ao Model para a view usar.
-            model.addAttribute("valorTaxaUnitario", valorTaxa);
-            model.addAttribute("valorTotalUnitarioComTaxa", valorTotalComTaxa);
-           
-
-            return "pedido"; 
-        }
-        return "redirect:/";
+        model.addAttribute("quantidadeAtual", 1);
+        model.addAttribute("cupomAtual", "");
+        return "pedido";
     }
 
     /**
-     * PASSO 1 (POST): Recebe a quantidade de ingressos e redireciona para o formulário de participantes.
+     * Recalcula o preço total com base na quantidade e cupom informados pelo usuário
+     * e renderiza a mesma página de pedido com os valores atualizados.
+     */
+    @PostMapping("/pedidos/calcular")
+    public String calcularEAtualizarPedido(
+            @RequestParam int eventoId,
+            @RequestParam int quantidade,
+            @RequestParam(required = false) String cupomCode,
+            Model model) {
+
+    	Evento evento = eventoService.buscarPorId(eventoId).orElseThrow(() -> new RuntimeException("Evento não encontrado"));
+        model.addAttribute("evento", evento);
+
+        // Chama o serviço e obtém o Map
+        Map<String, Object> resumoMap = pedidoService.calcularPrecoPreview(evento, quantidade, cupomCode);
+        // Adiciona tudo ao Model
+        model.addAllAttributes(resumoMap);
+
+        model.addAttribute("quantidadeAtual", quantidade);
+        model.addAttribute("cupomAtual", cupomCode);
+        return "pedido";
+    }
+
+    /**
+     * Recebe a quantidade e o cupom e redireciona para a página de dados dos participantes.
      */
     @PostMapping("/pedidos")
-    public String iniciarPedido(@RequestParam int eventoId, @RequestParam int quantidade, @RequestParam(required = false) String cupomCode,RedirectAttributes redirectAttributes) {
-        // Adiciona os parâmetros ao RedirectAttributes para que eles sejam passados na URL do redirecionamento.
+    public String iniciarPedido(@RequestParam int eventoId, @RequestParam int quantidade, @RequestParam(required = false) String cupomCode, RedirectAttributes redirectAttributes) {
         redirectAttributes.addAttribute("eventoId", eventoId);
         redirectAttributes.addAttribute("quantidade", quantidade);
         redirectAttributes.addAttribute("cupomCode", cupomCode);
-        // Redireciona para o endpoint que exibirá o formulário de dados dos participantes.
         return "redirect:/pedidos/participantes";
     }
 
     /**
-     * PASSO 1 (GET): Exibe o formulário para o usuário preencher os dados de cada participante/ingresso.
+     * Exibe o formulário para preenchimento dos dados dos participantes.
      */
     @GetMapping("/pedidos/participantes")
     public String exibirFormularioParticipantes(@RequestParam int eventoId, @RequestParam int quantidade, @RequestParam(required = false) String cupomCode, Model model) {
-        // Busca o evento para exibir suas informações na página.
         model.addAttribute("evento", eventoService.buscarPorId(eventoId).get());
-        // Passa a quantidade de ingressos para a view, para que ela possa renderizar o número correto de campos de formulário.
         model.addAttribute("quantidade", quantidade);
-        // Passa o cupom, se definido, para o view
         model.addAttribute("cupomCode", cupomCode);
-        // Renderiza a página "dados-participantes.html".
         return "dados-participantes";
     }
 
     /**
-     * PASSO 2 (POST): Processa os dados dos participantes e finaliza a compra.
+     * MÉTODO COM MARCADORES DE DEPURAÇÃO
      */
     @PostMapping("/pedidos/confirmar")
-    public String processarPedido(
+    public String revisarPedido(
             @RequestParam int eventoId,
-            @RequestParam List<String> nomeParticipante, // Spring popula esta lista com todos os inputs de nome="nomeParticipante".
-            @RequestParam List<String> emailParticipante, // Spring popula esta lista com todos os inputs de nome="emailParticipante".
+            @RequestParam List<String> nomeParticipante,
+            @RequestParam List<String> emailParticipante,
+            @RequestParam(required = false) String cupomCode,
+            Model model, HttpSession session) {
+
+
+        try {
+            if (session.getAttribute("usuarioLogado") == null) {
+                return "redirect:/login";
+            }
+
+            Evento evento = eventoService.buscarPorId(eventoId)
+                    .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
+
+            int quantidade = nomeParticipante.size();
+
+            List<Map<String, String>> participantes = new ArrayList<>();
+            for (int i = 0; i < quantidade; i++) {
+                Map<String, String> participante = new HashMap<>();
+                participante.put("nome", nomeParticipante.get(i));
+                participante.put("email", emailParticipante.get(i));
+                participantes.add(participante);
+            }
+
+            Map<String, Object> resumoMap = pedidoService.calcularPrecoPreview(evento, quantidade, cupomCode);
+
+            model.addAttribute("evento", evento);
+            model.addAttribute("quantidade", quantidade);
+            model.addAttribute("cupomCode", cupomCode);
+            model.addAttribute("participantes", participantes);
+            model.addAllAttributes(resumoMap);
+
+            return "confirmacao-pedido";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * Recebe a confirmação final e cria o pedido no banco de dados.
+     */
+    @PostMapping("/pedidos/finalizar")
+    public String finalizarPedido(
+            @RequestParam int eventoId,
+            @RequestParam List<String> nomeParticipante,
+            @RequestParam List<String> emailParticipante,
             @RequestParam(required = false) String cupomCode,
             HttpSession session, RedirectAttributes redirectAttributes) {
-        
-        // Verifica se o usuário está logado.
+
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
         if (usuarioLogado == null) {
-            return "redirect:/login"; // Se não estiver, redireciona para o login.
+            return "redirect:/login";
         }
 
         try {
-            // Chama o serviço para criar o pedido, agora passando as listas com os dados dos participantes.
             pedidoService.criarPedido(usuarioLogado.getIdUsuario(), eventoId, nomeParticipante, emailParticipante, cupomCode);
             
-            // Atualiza o objeto do usuário na sessão para refletir o novo pedido.
             Usuario usuarioAtualizado = usuarioRepository.findById(usuarioLogado.getIdUsuario()).get();
             session.setAttribute("usuarioLogado", usuarioAtualizado);
             
-            // Adiciona uma mensagem de sucesso para a próxima página.
             redirectAttributes.addFlashAttribute("sucesso", "Compra realizada com sucesso! Seus ingressos foram gerados.");
-            // Redireciona para a página de "meus eventos".
             return "redirect:/meus-eventos";
 
         } catch (RuntimeException e) {
-            // Em caso de erro, adiciona a mensagem e redireciona de volta para a página do evento.
             redirectAttributes.addFlashAttribute("erro", e.getMessage());
             return "redirect:/pedidos/evento/" + eventoId;
         }
@@ -156,7 +202,6 @@ public class PedidoController {
         try {
             pedidoService.cancelarPedido(usuarioLogado.getIdUsuario(), pedidoId);
             redirectAttributes.addFlashAttribute("sucesso", "Sua compra foi cancelada.");
-            // Atualiza a sessão para remover o pedido cancelado da lista do usuário.
             Usuario usuarioAtualizado = usuarioRepository.findById(usuarioLogado.getIdUsuario()).get();
             session.setAttribute("usuarioLogado", usuarioAtualizado);
         } catch (RuntimeException e) {
@@ -173,45 +218,23 @@ public class PedidoController {
                                        HttpSession session, 
                                        Model model, 
                                        RedirectAttributes redirectAttributes) {
-        // Garante que o usuário está logado.
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
         if (usuarioLogado == null) { return "redirect:/login"; }
 
-        // Variáveis para armazenar o ingresso e o pedido ao qual ele pertence.
-        Pedido pedidoPai = null;
-        Ingresso ingressoEncontrado = null;
-
-        // Itera sobre cada pedido do usuário logado.
         for (Pedido pedido : usuarioLogado.getPedidos()) {
-            // Dentro de cada pedido, itera sobre cada ingresso.
             for (Ingresso ingresso : pedido.getIngressos()) {
-                // Compara o ID do ingresso atual com o ID solicitado na URL.
                 if (ingresso.getIdIncricao().equals(ingressoId)) {
-                    // Se encontrar o ingresso, armazena o objeto do ingresso e do seu pedido "pai".
-                    ingressoEncontrado = ingresso;
-                    pedidoPai = pedido;
-                    break; // Para a busca no loop interno, pois já encontramos o ingresso.
+                    model.addAttribute("usuario", usuarioLogado);
+                    model.addAttribute("ingresso", ingresso);
+                    model.addAttribute("pedido", pedido);
+                    model.addAttribute("evento", pedido.getEvento());
+                    return "ingresso";
                 }
             }
-            // Se o ingresso foi encontrado no loop interno, podemos parar a busca externa também.
-            if (ingressoEncontrado != null) {
-                break;
-            }
         }
 
-        // Após a busca, verifica se um ingresso foi de fato encontrado.
-        if (ingressoEncontrado != null) {
-            // Se sim, adiciona todas as informações necessárias ao 'Model' para a view.
-            model.addAttribute("usuario", usuarioLogado);
-            model.addAttribute("ingresso", ingressoEncontrado);
-            model.addAttribute("pedido", pedidoPai);
-            model.addAttribute("evento", pedidoPai.getEvento());
-            // Renderiza a página "ingresso.html".
-            return "ingresso";
-        } else {
-            // Se o ingresso não foi encontrado na lista do usuário, ele não existe ou não pertence a ele.
-            redirectAttributes.addFlashAttribute("erro", "Ingresso não encontrado ou você não tem permissão para acessá-lo.");
-            return "redirect:/meus-eventos";
-        }
+        redirectAttributes.addFlashAttribute("erro", "Ingresso não encontrado ou você não tem permissão para acessá-lo.");
+        return "redirect:/meus-eventos";
     }
+
 }

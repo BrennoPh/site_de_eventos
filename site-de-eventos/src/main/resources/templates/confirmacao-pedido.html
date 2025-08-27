@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Revisar e Confirmar Compra</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .resumo-bloco { margin-bottom: 2rem; }
+        .resumo-bloco h3 { border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        .resumo-linha { display: flex; justify-content: space-between; padding: 0.5rem 0; font-size: 1.1em; }
+        .resumo-total { font-size: 1.5em; font-weight: bold; border-top: 1px solid var(--border); margin-top: 1rem; padding-top: 1rem;}
+    </style>
+</head>
+<body>
+    <div class="form-page-container" style="max-width: 800px;">
+        <h1>Revisar e Confirmar</h1>
+        <p class="muted">Confira todos os detalhes antes de finalizar sua compra.</p>
+
+        <form action="/pedidos/finalizar" method="POST">
+            
+            <div class="resumo-bloco">
+                <h3>Evento</h3>
+				<p class="muted">
+				    <span>📅 </span>
+				    
+				    <span th:if="${evento.dataEvento != null}" 
+				          th:text="${#temporals.format(evento.dataEvento, 'dd/MM/yyyy, HH:mm')} + 'h'"></span>
+				    
+				    <span> | 📍 </span>
+				    
+				    <span th:if="${evento.local != null}" th:text="${evento.local}"></span>
+				</p>
+            </div>
+
+            <div class="resumo-bloco">
+                <h3 th:text="|Participantes (${quantidade})|"></h3>
+                <div th:each="p : ${participantes}" style="border-bottom: 1px solid var(--border); padding: 0.5rem 0;">
+                    <p th:text="${p.nome}" style="margin: 0;"></p>
+                    <p th:text="${p.email}" class="muted" style="margin: 0; font-size: 0.9em;"></p>
+                </div>
+            </div>
+
+            <div class="resumo-bloco">
+                <h3>Resumo do Pagamento</h3>
+                <div class="resumo-linha">
+                    <span>Ingressos (<span th:text="${quantidade}"></span>)</span>
+                    <span th:text="${#numbers.formatCurrency(valorIngressos)}">R$ 0,00</span>
+                </div>
+                <div class="resumo-linha">
+                    <span>Taxa de Serviço</span>
+                    <span th:text="${#numbers.formatCurrency(valorTaxa)}">R$ 0,00</span>
+                </div>
+                <div th:if="${descontoAplicado > 0}" class="resumo-linha" style="color: #2ecc71;">
+                    <span>Desconto (Cupom)</span>
+                    <span th:text="|- ${#numbers.formatCurrency(descontoAplicado)}|">- R$ 0,00</span>
+                </div>
+                <div class="resumo-linha resumo-total">
+                    <span>TOTAL</span>
+                    <span th:text="${#numbers.formatCurrency(valorTotal)}">R$ 0,00</span>
+                </div>
+            </div>
+
+            <input type="hidden" name="eventoId" th:value="${evento.idEvento}" />
+            <input type="hidden" name="cupomCode" th:value="${cupomCode}" />
+            <div th:each="p : ${participantes}">
+                <input type="hidden" name="nomeParticipante" th:value="${p.nome}" />
+                <input type="hidden" name="emailParticipante" th:value="${p.email}" />
+            </div>
+
+            <button type="submit" class="btn-accent" style="width:100%; margin-top: 1rem; font-size: 1.2em; padding: 1rem;">
+                Confirmar e Finalizar Compra
+            </button>
+        </form>
+    </div>
+</body>
+</html>

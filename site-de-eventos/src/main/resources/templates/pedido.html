@@ -2,55 +2,65 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Confirmar Pedido</title>
+    <title>Comprar Ingressos</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .botoes-acao { display: flex; gap: 1rem; margin-top: 2rem; }
+        .botoes-acao button { flex-grow: 1; }
+    </style>
 </head>
 <body>
-    <div class="pedido-container">
-        <div class="evento-detalhe" th:if="${evento}">
-            
-            <img src="https://source.unsplash.com/random/800x400/?party,concert" alt="Imagem do Evento" style="width:100%; height:auto; border-radius: 8px;">
-            
-            <h1 th:text="${evento.nomeEvento}">Nome do Evento</h1>
-            
-            <p class="meta-info">
-                <span th:text="${#temporals.format(evento.dataEvento, 'dd MMM yyyy')}">Data</span> |
-                <span th:text="${evento.local}">Local</span>
-            </p>
-        </div>
-<div class="resumo-pedido">
-    <h3>Seu Pedido</h3>
-    
-    <p>Evento: "<span th:text="${evento.nomeEvento}">Nome do Evento</span>"</p>
-    
-    <p class="big" style="text-align: center; margin: 1rem 0;">
-        Preço por Ingresso: R$ <span th:text="${#numbers.formatDecimal(evento.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
-    </p>
-	
-	<p class="big" style="text-align: center; margin: 1rem 0;">
-	        <strong th:text="|R$ ${#numbers.formatDecimal(evento.preco, 1, 'POINT', 2, 'COMMA')}|">0,00</strong>
-	        <small th:text="|( + R$ ${#numbers.formatDecimal(valorTaxaUnitario, 1, 'POINT', 2, 'COMMA')} de taxa)|" style="font-weight: normal; color: var(--muted);">(+ R$ 0,00 de taxa)</small>
-	</p>
+<div class="pedido-container">
+    <div class="evento-detalhe" th:if="${evento}">
+        <img th:src="${evento.imageUrl != null ? evento.imageUrl : 'https://source.unsplash.com/random/800x400/?party,concert'}" alt="Imagem do Evento" style="width:100%; height:auto; border-radius: 8px;">
+        <h1 th:text="${evento.nomeEvento}">Nome do Evento</h1>
+        <p class="meta-info">
+            <span th:text="${#temporals.format(evento.dataEvento, 'dd MMM yyyy')}">Data</span> |
+            <span th:text="${evento.local}">Local</span>
+        </p>
+    </div>
 
-    <form action="/pedidos" method="POST" style="margin-top: 2rem;">
-        <input type="hidden" name="eventoId" th:value="${evento.idEvento}" />
-        <input type="hidden" name="usuarioId" th:if="${session.usuarioLogado != null}" th:value="${session.usuarioLogado.idUsuario}" />
-        
-        <div class="form-group">
-            <label for="quantidade">Quantidade de Ingressos</label>
-            <input type="number" id="quantidade" name="quantidade" value="1" min="1" 
-                   th:max="${evento.ingressosDisponiveis}" required 
-                   style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1a1a1a; border: 1px solid var(--border); color: var(--white); font-size: 1rem;">
-            <small th:text="'(Máximo de ' + ${evento.ingressosDisponiveis} + ' disponíveis)'" style="display: block; text-align: right; margin-top: 0.5rem;"></small>
-        </div>
-        <div class="form-group" style="margin-top: 2rem;">
-            <label for="cupomCode">Cupom de Desconto</label>
-            <input type="text" id="cupomCode" name="cupomCode" placeholder="Digite seu cupom aqui"
-                    style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1a1a1a; border: 1px solid var(--border); color: var(--white); font-size: 1rem;">
-        </div>
-        
-        <button type="submit" class="btn-accent" style="width:100%; margin-top: 2rem;">Confirmar Compra</button>
-    </form>
+    <div class="resumo-pedido">
+        <h3>Seu Pedido</h3>
+
+        <form id="form-pedido" method="POST">
+            <input type="hidden" name="eventoId" th:value="${evento.idEvento}" />
+            
+            <div class="form-group">
+                <label for="quantidade">Quantidade de Ingressos</label>
+                <input type="number" id="quantidade" name="quantidade" min="1" 
+                       th:max="${evento.ingressosDisponiveis}" required 
+                       th:value="${quantidadeAtual}"> </div>
+            
+            <div class="form-group" style="margin-top: 1rem;">
+                <label for="cupomCode">Cupom de Desconto</label>
+                <input type="text" id="cupomCode" name="cupomCode" placeholder="Digite seu cupom"
+                       th:value="${cupomAtual}"> </div>
+
+            <div id="resumo-servidor" style="margin: 1.5rem 0;" th:if="${valorTotal != null}">
+                <p class="resumo-linha"><span>Ingressos</span> <span th:text="${#numbers.formatCurrency(valorIngressos)}"></span></p>
+                <p class="resumo-linha"><span>Taxa de Serviço</span> <span th:text="${#numbers.formatCurrency(valorTaxa)}"></span></p>
+                
+                <div th:if="${descontoAplicado > 0}">
+                    <p class="resumo-linha" style="color: #2ecc71;"><span>Desconto</span> <span th:text="|- ${#numbers.formatCurrency(descontoAplicado)}|"></span></p>
+                </div>
+                
+                <div th:if="${cupomValido != null}">
+                    <p th:if="${cupomValido}" style="color: #2ecc71; text-align: center;">Cupom aplicado com sucesso!</p>
+                    <p th:unless="${cupomValido}" style="color: #e74c3c; text-align: center;">Cupom inválido.</p>
+                </div>
+
+                <hr style="border-color: var(--border); margin: 1rem 0;">
+                <p class="resumo-linha resumo-total"><span>TOTAL</span> <span th:text="${#numbers.formatCurrency(valorTotal)}"></span></p>
+            </div>
+            
+            <div class="botoes-acao">
+                <button type="submit" formaction="/pedidos/calcular" class="btn-neutral">Atualizar Total</button>
+                
+                <button type="submit" formaction="/pedidos" class="btn-accent">Próxima Etapa</button>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

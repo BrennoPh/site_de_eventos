@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger; // Importar
@@ -36,7 +37,7 @@ public class PedidoService {
     /**
      * Gerador de IDs para pedidos, garantindo unicidade de forma thread-safe.
      */
-    private static final AtomicInteger pedidoIdGenerator = new AtomicInteger(0);
+    public static final AtomicInteger pedidoIdGenerator = new AtomicInteger(0);
 
 
     /**
@@ -211,4 +212,48 @@ public class PedidoService {
         // Salva o objeto 'usuario'. O JPA/Hibernate entende que o 'pedidoParaCancelar' dentro da lista foi modificado e persiste a alteração.
         usuarioRepository.save(usuario);
     }
+    
+    
+    /**
+     * Calcula uma prévia dos valores de um pedido sem persisti-lo.
+     * Retorna um Map contendo todos os valores calculados.
+     *
+     * @param evento O evento da compra.
+     * @param quantidade A quantidade de ingressos.
+     * @param cupomCode O código do cupom a ser testado.
+     * @return um Map<String, Object> com os resultados.
+     */
+    public Map<String, Object> calcularPrecoPreview(Evento evento, int quantidade, String cupomCode) {
+        // Cria o Map que será retornado
+        Map<String, Object> resumo = new HashMap<>();
+
+        // Lógica de cálculo que já tínhamos
+        double valorIngressos = evento.getPreco() * quantidade;
+        
+        Pedido pedidoParaCalculo = new Pedido();
+        pedidoParaCalculo.setValorBase(valorIngressos);
+
+        ICalculoPrecoPedidoStrategy taxaStrategy = new CalculoComTaxaServico();
+        double valorAposTaxa = taxaStrategy.calcularPreco(pedidoParaCalculo);
+        double valorTaxa = valorAposTaxa - valorIngressos;
+
+        double descontoAplicado = 0;
+        boolean cupomValido = false;
+        if (cupomCode != null && !cupomCode.isEmpty() && cupomCode.equalsIgnoreCase(evento.getCupomCode())) {
+            descontoAplicado = evento.getCupomDiscountValue() * quantidade;
+            cupomValido = true;
+        }
+
+        double valorTotal = Math.max(0, valorIngressos + valorTaxa - descontoAplicado);
+        
+        // Adiciona todos os resultados ao Map
+        resumo.put("valorIngressos", valorIngressos);
+        resumo.put("valorTaxa", valorTaxa);
+        resumo.put("descontoAplicado", descontoAplicado);
+        resumo.put("valorTotal", valorTotal);
+        resumo.put("cupomValido", cupomValido);
+        
+        return resumo;
+    }
+    
 }
