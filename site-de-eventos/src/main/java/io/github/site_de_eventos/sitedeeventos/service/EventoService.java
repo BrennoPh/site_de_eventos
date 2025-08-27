@@ -218,6 +218,10 @@ public class EventoService {
         if (dataEvento.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("A data do evento não pode ser anterior à data atual.");
         }
+        
+        if (cupomDiscountValue > (preco * 0.5)) {
+            throw new IllegalArgumentException("O valor do desconto do cupom não pode exceder 50% do preço do ingresso.");
+        }
 
         IEventoBuilder builder = new EventoBuilderConcreto();
 
