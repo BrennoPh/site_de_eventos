@@ -96,7 +96,7 @@ public class EventoController {
             @RequestParam(required = false) String imageUrl,
             @RequestParam(required = false) String cupomCode,
             @RequestParam(defaultValue = "0.0") double cupomDiscountValue,
-            HttpSession session, RedirectAttributes redirectAttributes) {
+            HttpSession session, RedirectAttributes redirectAttributes, Model model) {
         // Pega o usuário da sessão para verificar se ele pode criar eventos.
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
 
@@ -114,10 +114,18 @@ public class EventoController {
                 // Redireciona para a página que lista os eventos do organizador.
                 return "redirect:/meus-eventos-organizados";
             } catch (Exception e) {
-                // Em caso de erro, adiciona a mensagem da exceção para ser exibida.
-                redirectAttributes.addFlashAttribute("erro", e.getMessage());
+            	 // Em caso de erro, adiciona a mensagem da exceção para ser exibida.
+            	model.addAttribute("erro", e.getMessage());
+                model.addAttribute("nomeEvento_old", nomeEvento);
+                model.addAttribute("dataEvento_old", dataEvento.toString()); 
+                model.addAttribute("local_old", local);
+                model.addAttribute("descricao_old", descricao);
+                model.addAttribute("categoria_old", categoria);
+                model.addAttribute("preco_old", preco);
+                model.addAttribute("ingressosDisponiveis_old", capacidade);
+                model.addAttribute("imagem_old", imageUrl);
                 // Redireciona de volta para o formulário de criação.
-                return "redirect:/eventos/novo";
+                return "criar-evento";
             }
         }
         // Se não for um organizador, redireciona para a página inicial.
