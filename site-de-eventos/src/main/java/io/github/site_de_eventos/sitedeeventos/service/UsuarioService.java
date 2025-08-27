@@ -135,6 +135,15 @@ public class UsuarioService {
         if (!isEmailValido(email)) {
             throw new RuntimeException("Erro: E-mail inválido.");
         }
+        
+        String telefonePadronizado = "";
+        if (telefone != null && !telefone.isBlank()) {
+            String digitosTelefone = telefone.replaceAll("[^0-9]", ""); // Remove tudo que não for número
+            if (digitosTelefone.length() < 10 || digitosTelefone.length() > 11) { // Aceita DDD + 8 ou 9 dígitos
+                throw new RuntimeException("Telefone inválido. Forneça o DDD e o número com 8 ou 9 dígitos.");
+            }
+            telefonePadronizado = digitosTelefone;
+        }
         if (dataNascimento != null) {
             if (dataNascimento.toLocalDate().isAfter(LocalDate.now().minusYears(18))) {
                 throw new RuntimeException("É necessário ter no mínimo 18 anos para se cadastrar.");
@@ -155,7 +164,7 @@ public class UsuarioService {
                     .email(email)
                     .senha(senha)
                     .cpf(cpf)
-                    .telefone(telefone)
+                    .telefone(telefonePadronizado)
                     .dataNascimento(dataNascimento)
                     .cidade(cidade)
                     .endereco(endereco))
