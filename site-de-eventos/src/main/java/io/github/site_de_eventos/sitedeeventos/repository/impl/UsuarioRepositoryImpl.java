@@ -11,6 +11,7 @@ import io.github.site_de_eventos.sitedeeventos.model.UsuarioBuilderConcreto;
 import io.github.site_de_eventos.sitedeeventos.model.builder.IOrganizadorBuilder;
 import io.github.site_de_eventos.sitedeeventos.model.builder.IUsuarioBuilder;
 import io.github.site_de_eventos.sitedeeventos.repository.UsuarioRepository;
+import io.github.site_de_eventos.sitedeeventos.service.PedidoService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
@@ -158,6 +159,19 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
                 }
                 int maxId = usuarios.stream().mapToInt(Usuario::getIdUsuario).max().orElse(0);
                 idGenerator.set(maxId);
+                
+                // 1. Encontra o maior ID de PEDIDO entre todos os usuários
+                int maxPedidoId = usuarios.stream() // Pega a lista de usuários
+                    .flatMap(usuario -> usuario.getPedidos().stream()) // Transforma em uma única lista de todos os pedidos
+                    .mapToInt(Pedido::getIdPedido) // Pega apenas o ID de cada pedido
+                    .max() // Encontra o maior ID
+                    .orElse(0); // Se não houver nenhum pedido, começa do 0
+
+                // 2. Ajusta o contador de ID do PedidoService com o maior ID encontrado
+                PedidoService.pedidoIdGenerator.set(maxPedidoId);
+                
+                System.out.println("Contador de PedidoIDs inicializado em: " + maxPedidoId); // Log para confirmação
+
             }
         } catch (IOException e) {
             System.err.println("Erro ao carregar dados de usuários: " + e.getMessage());
